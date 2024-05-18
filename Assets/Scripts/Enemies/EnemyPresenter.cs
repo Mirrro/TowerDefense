@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Vector3 = UnityEngine.Vector3;
 
-public class EnemyPresenter
+public class EnemyPresenter : IEnemyPresenter
 {
     public UnityEvent Died = new ();
     private EnemyModel model;
@@ -71,4 +71,13 @@ public class EnemyPresenter
         var path = gridManager.GetPath(gridManager.WorldToGridPosition(model.position), model.gridTargetPosition);
         view.MoveTo(path[1]);
     }
+}
+
+public interface IEnemyPresenter
+{
+    public Vector3 GetPosition();
+    public Transform GetTransform();
+    public void Initialize();
+    public void Move(Vector2Int target);
+    public void ReceiveDamage(int amount);
 }
