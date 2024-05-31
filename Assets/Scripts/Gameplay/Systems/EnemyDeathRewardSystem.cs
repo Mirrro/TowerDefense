@@ -9,9 +9,14 @@
         this.enemyManager = enemyManager;
     }
 
-    public void Initialize()
+    public void Activate()
     {
         enemyManager.EnemyDied += HandleEnemyDeath;
+    }
+
+    public void Deactivate()
+    {
+        enemyManager.EnemyDied -= HandleEnemyDeath;
     }
 
     private void HandleEnemyDeath(EnemyPresenter obj)

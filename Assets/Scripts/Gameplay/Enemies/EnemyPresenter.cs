@@ -49,13 +49,11 @@ public class EnemyPresenter : IEnemyPresenter
     {
         if (model.Health <= 0)
         {
-            Debug.Log("Dead");
             view.Die();
             Died?.Invoke();
         }
         else
         {
-            Debug.Log($"Damaged for {amount}");
             model.Health -= amount;
             view.ReceiveDamage();
         }

@@ -8,7 +8,8 @@ public class EnemyManager
     public event Action<EnemyPresenter> EnemyDied;
     
     private readonly GridManager gridManager;
-    private List<EnemyPresenter> enemies = new ();
+    public int ActiveEnemiesCount => activeEnemies.Count;
+    private List<EnemyPresenter> activeEnemies = new ();
 
     public EnemyManager(GridManager gridManager)
     {
@@ -22,18 +23,18 @@ public class EnemyManager
         enemy.SetPosition(new Vector3(startPos.x, 0.3f, startPos.y));
         enemy.Move(endPosition);
         enemy.Died.AddListener(() => HandleDeath(enemy));
-        enemies.Add(enemy);
+        activeEnemies.Add(enemy);
     }
 
     private void HandleDeath(EnemyPresenter enemyPresenter)
     {
-        enemies.Remove(enemyPresenter);
+        activeEnemies.Remove(enemyPresenter);
         EnemyDied?.Invoke(enemyPresenter);
     }
 
     public IEnumerable<EnemyPresenter> FindEnemiesOnGrid(Vector3 position, int radius)
     {
-        return enemies.Where(enemy => IsInRadius(
+        return activeEnemies.Where(enemy => IsInRadius(
             origin: gridManager.WorldToGridPosition(position),
             radius: radius,
             target: gridManager.WorldToGridPosition(enemy.GetPosition())));

@@ -23,6 +23,11 @@ public class GridInteraction
         {
             var gridPos = gridManager.WorldToGridPosition(hit);
 
+            if (!gridManager.IsInBound(gridPos))
+            {
+                return;
+            }
+
             if (gridPos != hoveredCell)
             {
                 hoveredCell = gridPos;

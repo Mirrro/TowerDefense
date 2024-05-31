@@ -30,4 +30,10 @@ public class GridManager
     {
         return new Vector2Int(Mathf.RoundToInt(worldPosition.x), Mathf.RoundToInt(worldPosition.z));
     }
+
+    public bool IsInBound(Vector2Int gridPosition)
+    {
+        return gridPosition.x >= 0 && gridPosition.x < grid.Size.x &&
+               gridPosition.y >= 0 && gridPosition.y < grid.Size.y;
+    }
 }

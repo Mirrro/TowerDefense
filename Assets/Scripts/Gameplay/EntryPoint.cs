@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -24,6 +23,7 @@ public class EntryPoint : MonoBehaviour
     private PlayerBank playerBank;
     private EnemyDeathRewardSystem enemyDeathRewardSystem;
     private UIManager uiManager;
+    private GameplayLoop gameplayLoop;
 
     private List<TowerPresenter> presenters = new List<TowerPresenter>();
 
@@ -39,18 +39,18 @@ public class EntryPoint : MonoBehaviour
         buildingSystem = new BuildingSystem(gridManager, gridInteraction, playerBank, towerFactory);
         enemyDeathRewardSystem = new EnemyDeathRewardSystem(playerBank, enemyManager);
         uiManager = new UIManager(uiViewReferences, playerBank);
+        gameplayLoop = new GameplayLoop(new GameplayStateMachine(), new PlayerTurnState(buildingSystem, uiManager),
+            new EnemyTurnState(enemyDeathRewardSystem, enemyManager));
     }
 
     private void Start()
     {
-        enemyDeathRewardSystem.Initialize();
         cameraPresenter.Initialize();
-        buildingSystem.Activate();
         levelGenerator.PopulateGrid(gridManager.Grid);
         playerBank.AddMoney(1000);
-        StartCoroutine(SpawnInterval(1, 100));
         buildingSystem.TowerBuild += HandleTowerBuild;
         uiManager.Initialize();
+        gameplayLoop.Start();
     }
 
     private void HandleTowerBuild(TowerPresenter obj)
@@ -58,17 +58,9 @@ public class EntryPoint : MonoBehaviour
         presenters.Add(obj);
     }
 
-    private IEnumerator SpawnInterval(float time, int count)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            enemyManager.SpawnEnemy(start, end);
-            yield return new WaitForSeconds(time);
-        }
-    }
-
     private void Update()
     {
+        gameplayLoop.Update();
         var path = gridManager.GetPath(start, end);
         lineRenderer.positionCount = path.Count;
         lineRenderer.SetPositions(path.ToArray().Select(position => position + Vector3.up * .3f).ToArray());
