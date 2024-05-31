@@ -45,7 +45,6 @@ public class EntryPoint : MonoBehaviour
 
     private void Start()
     {
-        cameraPresenter.Initialize();
         levelGenerator.PopulateGrid(gridManager.Grid);
         playerBank.AddMoney(1000);
         buildingSystem.TowerBuild += HandleTowerBuild;
@@ -60,6 +59,7 @@ public class EntryPoint : MonoBehaviour
 
     private void Update()
     {
+        cameraPresenter.Update();
         gameplayLoop.Update();
         var path = gridManager.GetPath(start, end);
         lineRenderer.positionCount = path.Count;
