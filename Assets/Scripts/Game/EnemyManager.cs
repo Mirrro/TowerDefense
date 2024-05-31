@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class EnemyManager
 {
+    public event Action<EnemyPresenter> EnemyDied;
+    
     private readonly GridManager gridManager;
     private List<EnemyPresenter> enemies = new ();
 
@@ -26,6 +28,7 @@ public class EnemyManager
     private void HandleDeath(EnemyPresenter enemyPresenter)
     {
         enemies.Remove(enemyPresenter);
+        EnemyDied?.Invoke(enemyPresenter);
     }
 
     public IEnumerable<EnemyPresenter> FindEnemiesOnGrid(Vector3 position, int radius)

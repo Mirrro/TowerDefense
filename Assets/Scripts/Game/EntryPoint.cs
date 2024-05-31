@@ -9,31 +9,53 @@ public class EntryPoint : MonoBehaviour
     [SerializeField] private Vector2Int start;
     [SerializeField] private Vector2Int end;
     [SerializeField] private CameraView cameraView;
-    [SerializeField] private GameObject indicatorPrefab;
+    [SerializeField] private UIViewReferences uiViewReferences;
     
     private readonly LevelGenerator levelGenerator = new ();
     private readonly MouseRayCast mouseRayCast = new ();
     private GridManager gridManager;
     private LineRenderer lineRenderer;
     private CameraPresenter cameraPresenter;
-    private GameObject indicator;
     private EnemyManager enemyManager;
-    private List<TowerPresenter> towerPresenters = new (); 
+    private GridInteraction gridInteraction;
+    private GameObject indicator;
+    private TowerFactory towerFactory;
+    private BuildingSystem buildingSystem;
+    private PlayerBank playerBank;
+    private EnemyDeathRewardSystem enemyDeathRewardSystem;
+    private UIManager uiManager;
+
+    private List<TowerPresenter> presenters = new List<TowerPresenter>();
 
     private void Awake()
     {
         gridManager = new GridManager(gridSize);
         lineRenderer = GetComponent<LineRenderer>();
-        cameraPresenter = new CameraPresenter(cameraView, new CameraModel());
         enemyManager = new EnemyManager(gridManager);
-        cameraPresenter.Initialize();
-        indicator = Instantiate(indicatorPrefab);
+        cameraPresenter = new CameraPresenter(cameraView, new CameraModel());
+        gridInteraction = new GridInteraction(gridManager, mouseRayCast);
+        towerFactory = new TowerFactory(enemyManager);
+        playerBank = new PlayerBank();
+        buildingSystem = new BuildingSystem(gridManager, gridInteraction, playerBank, towerFactory);
+        enemyDeathRewardSystem = new EnemyDeathRewardSystem(playerBank, enemyManager);
+        uiManager = new UIManager(uiViewReferences, playerBank);
     }
 
     private void Start()
     {
+        enemyDeathRewardSystem.Initialize();
+        cameraPresenter.Initialize();
+        buildingSystem.Activate();
         levelGenerator.PopulateGrid(gridManager.Grid);
+        playerBank.AddMoney(1000);
         StartCoroutine(SpawnInterval(1, 100));
+        buildingSystem.TowerBuild += HandleTowerBuild;
+        uiManager.Initialize();
+    }
+
+    private void HandleTowerBuild(TowerPresenter obj)
+    {
+        presenters.Add(obj);
     }
 
     private IEnumerator SpawnInterval(float time, int count)
@@ -51,62 +73,11 @@ public class EntryPoint : MonoBehaviour
         lineRenderer.positionCount = path.Count;
         lineRenderer.SetPositions(path.ToArray().Select(position => position + Vector3.up * .3f).ToArray());
         
-        if (mouseRayCast.TryGetPosition(out var hit))
+        gridInteraction.Update();
+
+        foreach (var towerPresenter in presenters)
         {
-            var gridPos = gridManager.WorldToGridPosition(hit);
-            indicator.transform.position = new Vector3(gridPos.x, 0, gridPos.y);
-            
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (gridManager.Grid.GridNodes[gridPos.x, gridPos.y].IsSolid)
-                {
-                    return;
-                }
-                var model = new TowerModel(new Vector3(gridPos.x, 0, gridPos.y), 2, 10, 1);
-                var presenter = PresenterFactory.CreateTower(model, enemyManager);
-                presenter.Initialize();
-                towerPresenters.Add(presenter);
-                gridManager.Grid.GridNodes[gridPos.x, gridPos.y].AddGirdElement(presenter);
-            }
+            towerPresenter.Update();
         }
-
-        foreach (var presenter in towerPresenters)
-        {
-            presenter.Update();
-        }
-    }
-}
-
-public class PlacementSystem
-{
-    private readonly GridManager gridManager;
-    private readonly MouseRayCast mouseRayCast;
-
-    public PlacementSystem(GridManager gridManager, MouseRayCast mouseRayCast)
-    {
-        this.gridManager = gridManager;
-        this.mouseRayCast = mouseRayCast;
-    }
-
-    public void Update()
-    {
-        // if (mouseRayCast.TryGetPosition(out var hit))
-        // {
-        //     var gridPos = gridManager.WorldToGridPosition(hit);
-        //     indicator.transform.position = new Vector3(gridPos.x, 0, gridPos.y);
-        //     
-        //     if (Input.GetMouseButtonDown(0))
-        //     {
-        //         if (gridManager.Grid.GridNodes[gridPos.x, gridPos.y].IsSolid)
-        //         {
-        //             return;
-        //         }
-        //         var model = new TowerModel(new Vector3(gridPos.x, 0, gridPos.y), 2, 10, 1);
-        //         var presenter = PresenterFactory.CreateTower(model, enemyManager);
-        //         presenter.Initialize();
-        //         towerPresenters.Add(presenter);
-        //         gridManager.Grid.GridNodes[gridPos.x, gridPos.y].AddGirdElement(presenter);
-        //     }
-        // }
     }
 }

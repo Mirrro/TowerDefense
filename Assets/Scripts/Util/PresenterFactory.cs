@@ -27,9 +27,5 @@ public static class PresenterFactory
         return new EnemyPresenter(Object.Instantiate(container.EnemyView, Vector3.zero, Quaternion.identity), model, gridManager);
     }
     
-    public static TowerPresenter CreateTower(TowerModel model, EnemyManager enemyManager)
-    {
-        var container = Resources.Load<ViewContainer>(path);
-        return new TowerPresenter(Object.Instantiate(container.TowerView, Vector3.zero, Quaternion.identity), model, enemyManager);
-    }
+    
 }
