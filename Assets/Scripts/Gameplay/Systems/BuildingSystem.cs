@@ -1,22 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BuildingSystem
 {
-    public event Action<TowerPresenter> TowerBuild; 
+    public event Action<IGridElement> ElementPlaced; 
     private const int towerCost = 100;
     
     private readonly GridManager gridManager;
     private readonly GridInteraction gridInteraction;
-    private readonly PlayerBank playerBank;
-    private readonly TowerFactory towerFactory;
 
-    public BuildingSystem(GridManager gridManager, GridInteraction gridInteraction, PlayerBank playerBank, TowerFactory towerFactory)
+    private List<IGridElement> buildQueue = new List<IGridElement>();
+
+    public BuildingSystem(GridManager gridManager, GridInteraction gridInteraction)
     {
         this.gridManager = gridManager;
         this.gridInteraction = gridInteraction;
-        this.playerBank = playerBank;
-        this.towerFactory = towerFactory;
     }
 
     public void Activate()
@@ -29,17 +29,29 @@ public class BuildingSystem
         gridInteraction.OnGridCellSelected -= HandleGridSelected;
     }
 
+    public void AddElementToBuildQueue(IGridElement gridElement)
+    {
+        buildQueue.Add(gridElement);
+    }
+    
+    public void RemoveElementToBuildQueue(IGridElement gridElement)
+    {
+        buildQueue.Remove(gridElement);
+    }
+
     private void HandleGridSelected(Vector2Int obj)
     {
         GridNode selectedGrid = gridManager.Grid.GridNodes[obj.x, obj.y];
-        
-        if (!selectedGrid.IsSolid && playerBank.Coins >= towerCost)
+
+        if (buildQueue.Count > 0)
         {
-            TowerPresenter presenter =
-                towerFactory.CreateTower(new TowerModel(new Vector3(obj.x, 0, obj.y), 10, 10, 1));
-            selectedGrid.AddGirdElement(presenter);
-            playerBank.RemoveMoney(towerCost);
-            TowerBuild?.Invoke(presenter);
+            IGridElement element = buildQueue.First();
+            
+            if (!selectedGrid.IsSolid)
+            {
+                selectedGrid.AddGirdElement(element);
+                ElementPlaced?.Invoke(element);
+            }
         }
     }
 }

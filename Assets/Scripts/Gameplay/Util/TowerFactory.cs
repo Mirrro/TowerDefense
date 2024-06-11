@@ -11,7 +11,7 @@ public class TowerFactory
         this.enemyManager = enemyManager;
     }
     
-    public TowerPresenter CreateTower(TowerModel model)
+    public TowerPresenter CreateBasicTower(TowerModel model)
     {
         var container = Resources.Load<ViewContainer>(path);
         TowerPresenter presenter = new TowerPresenter(Object.Instantiate(container.TowerView, Vector3.zero, Quaternion.identity), model, enemyManager);

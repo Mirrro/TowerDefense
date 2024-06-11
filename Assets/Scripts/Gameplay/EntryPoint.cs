@@ -25,7 +25,7 @@ public class EntryPoint : MonoBehaviour
     private UIManager uiManager;
     private GameplayLoop gameplayLoop;
 
-    private List<TowerPresenter> presenters = new List<TowerPresenter>();
+    private List<TowerPresenter> presenters = new ();
 
     private void Awake()
     {
@@ -47,12 +47,12 @@ public class EntryPoint : MonoBehaviour
     {
         levelGenerator.PopulateGrid(gridManager.Grid);
         playerBank.AddMoney(1000);
-        buildingSystem.TowerBuild += HandleTowerBuild;
+        buildingSystem.ElementPlaced += HandleElementPlaced;
         uiManager.Initialize();
         gameplayLoop.Start();
     }
 
-    private void HandleTowerBuild(TowerPresenter obj)
+    private void HandleElementPlaced(TowerPresenter obj)
     {
         presenters.Add(obj);
     }
