@@ -11,7 +11,7 @@
 
     public void Update()
     {
-        if (activeState.GameplayStateStatus == GameplayStateStatus.Running)
+        if (activeState is {GameplayStateStatus: GameplayStateStatus.Running})
         {
             activeState?.Update();
         }

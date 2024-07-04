@@ -14,8 +14,8 @@ public class CameraView : MonoBehaviour
     
     public void LerpTo(Vector3 position, Quaternion rotation, float speed)
     {
-        Debug.Log($"Move to {position}");
         parentTween?.Kill();
+        parentTween = DOTween.Sequence();
         parentTween.Join(transform.DOMove(position, 1 / speed)
             .OnUpdate(() => ChangedPosition?.Invoke(transform.position)));
         parentTween.Join(transform.DORotateQuaternion(rotation, speed));

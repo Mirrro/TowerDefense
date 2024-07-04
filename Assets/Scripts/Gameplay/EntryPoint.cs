@@ -9,6 +9,7 @@ public class EntryPoint : MonoBehaviour
     [SerializeField] private Vector2Int end;
     [SerializeField] private CameraView cameraView;
     [SerializeField] private UIViewReferences uiViewReferences;
+    [SerializeField] private BuildMenuItemsContainer buildMenuItemsContainer;
     
     private readonly LevelGenerator levelGenerator = new ();
     private readonly MouseRayCast mouseRayCast = new ();
@@ -19,27 +20,33 @@ public class EntryPoint : MonoBehaviour
     private GridInteraction gridInteraction;
     private GameObject indicator;
     private TowerFactory towerFactory;
-    private BuildingSystem buildingSystem;
+    private GridPlacementSystem gridPlacementSystem;
     private PlayerBank playerBank;
     private EnemyDeathRewardSystem enemyDeathRewardSystem;
     private UIManager uiManager;
     private GameplayLoop gameplayLoop;
-
-    private List<TowerPresenter> presenters = new ();
+    private TowerBuildSystem towerBuildSystem;
 
     private void Awake()
     {
-        gridManager = new GridManager(gridSize);
         lineRenderer = GetComponent<LineRenderer>();
-        enemyManager = new EnemyManager(gridManager);
-        cameraPresenter = new CameraPresenter(cameraView, new CameraModel());
+        
+        gridManager = new GridManager(gridSize);
         gridInteraction = new GridInteraction(gridManager, mouseRayCast);
+        gridPlacementSystem = new GridPlacementSystem(gridManager, gridInteraction);
+        
+        cameraPresenter = new CameraPresenter(cameraView, new CameraModel());
+        enemyManager = new EnemyManager(gridManager);
         towerFactory = new TowerFactory(enemyManager);
         playerBank = new PlayerBank();
-        buildingSystem = new BuildingSystem(gridManager, gridInteraction, playerBank, towerFactory);
-        enemyDeathRewardSystem = new EnemyDeathRewardSystem(playerBank, enemyManager);
         uiManager = new UIManager(uiViewReferences, playerBank);
-        gameplayLoop = new GameplayLoop(new GameplayStateMachine(), new PlayerTurnState(buildingSystem, uiManager),
+
+        towerBuildSystem = new TowerBuildSystem(uiManager, gridPlacementSystem, playerBank, towerFactory);
+        enemyDeathRewardSystem = new EnemyDeathRewardSystem(playerBank, enemyManager);
+        
+        gameplayLoop = new GameplayLoop(
+            new GameplayStateMachine(), 
+            new PlayerTurnState(towerBuildSystem, uiManager, buildMenuItemsContainer),
             new EnemyTurnState(enemyDeathRewardSystem, enemyManager));
     }
 
@@ -47,14 +54,8 @@ public class EntryPoint : MonoBehaviour
     {
         levelGenerator.PopulateGrid(gridManager.Grid);
         playerBank.AddMoney(1000);
-        buildingSystem.ElementPlaced += HandleElementPlaced;
         uiManager.Initialize();
         gameplayLoop.Start();
-    }
-
-    private void HandleElementPlaced(TowerPresenter obj)
-    {
-        presenters.Add(obj);
     }
 
     private void Update()
@@ -66,10 +67,6 @@ public class EntryPoint : MonoBehaviour
         lineRenderer.SetPositions(path.ToArray().Select(position => position + Vector3.up * .3f).ToArray());
         
         gridInteraction.Update();
-
-        foreach (var towerPresenter in presenters)
-        {
-            towerPresenter.Update();
-        }
+        towerFactory.Update();
     }
 }

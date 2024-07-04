@@ -18,6 +18,7 @@ public class GridNode
     public void AddGirdElement(IGridElement gridElement)
     {
         gridElements.Add(gridElement);
+        gridElement.OnGridPosition(new Vector3(index.x, 0, index.y));
     }
 
     public void RemoveElement(IGridElement gridElement)

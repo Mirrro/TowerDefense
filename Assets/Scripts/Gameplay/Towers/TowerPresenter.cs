@@ -4,7 +4,13 @@ using UnityEngine;
 public class TowerPresenter : IGridElement
 {
     public bool IsSolid => true;
-    
+    public void OnGridPosition(Vector3 position)
+    {
+        Debug.Log(position);
+        model.Position = position;
+        view.SetPosition(model.Position);
+    }
+
     private readonly TowerModel model;
     private readonly EnemyManager enemyManager;
     private readonly TowerView view;
@@ -20,7 +26,7 @@ public class TowerPresenter : IGridElement
 
     public void Initialize()
     {
-        view.SetPosition(model.Position);
+        //view.SetPosition(model.Position);
     }
 
     public void Update()

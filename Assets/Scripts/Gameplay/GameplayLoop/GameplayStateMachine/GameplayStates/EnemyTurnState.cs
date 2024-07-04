@@ -33,7 +33,6 @@ public class EnemyTurnState : IGameplayState
 
     public void Update()
     {
-        Debug.Log("updating");
         if (enemyManager.ActiveEnemiesCount <= 0)
         {
             StateComplete?.Invoke();

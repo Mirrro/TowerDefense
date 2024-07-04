@@ -2,13 +2,15 @@
 
 public class PlayerTurnState : IGameplayState
 {
-    private readonly BuildingSystem buildingSystem;
+    private readonly TowerBuildSystem towerBuildSystem;
     private readonly UIManager uiManager;
+    private readonly BuildMenuItemsContainer container;
 
-    public PlayerTurnState(BuildingSystem buildingSystem, UIManager uiManager)
+    public PlayerTurnState(TowerBuildSystem towerBuildSystem, UIManager uiManager, BuildMenuItemsContainer container)
     {
-        this.buildingSystem = buildingSystem;
+        this.towerBuildSystem = towerBuildSystem;
         this.uiManager = uiManager;
+        this.container = container;
     }
 
     public event Action StateComplete;
@@ -16,7 +18,8 @@ public class PlayerTurnState : IGameplayState
 
     public void Activate()
     {
-        buildingSystem.Activate();
+        towerBuildSystem.SetItems(container.Items);
+        towerBuildSystem.Activate();
         uiManager.EndTurnPresenter.ActivateButton(true);
         uiManager.EndTurnPresenter.TurnEnded += HandleTurnEnd;
     }
@@ -28,12 +31,12 @@ public class PlayerTurnState : IGameplayState
 
     public void OnPause()
     {
-        buildingSystem.Deactivate();
+        towerBuildSystem.Deactivate();
     }
 
     public void OnUnpause()
     {
-        buildingSystem.Activate();
+        towerBuildSystem.Activate();
     }
 
     public void Update()
@@ -42,7 +45,7 @@ public class PlayerTurnState : IGameplayState
 
     public void Deactivate()
     {
-        buildingSystem.Deactivate();
+        towerBuildSystem.Deactivate();
         uiManager.EndTurnPresenter.ActivateButton(false);
         uiManager.EndTurnPresenter.TurnEnded -= HandleTurnEnd;
     }

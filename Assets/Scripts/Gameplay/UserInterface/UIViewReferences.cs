@@ -8,4 +8,8 @@ public class UIViewReferences : MonoBehaviour
     [SerializeField] private EndTurnView endTurnView;
 
     public EndTurnView EndTurnView => endTurnView;
+    
+    [SerializeField] private BuildMenuView buildMenuView;
+
+    public BuildMenuView BuildMenuView => buildMenuView;
 }

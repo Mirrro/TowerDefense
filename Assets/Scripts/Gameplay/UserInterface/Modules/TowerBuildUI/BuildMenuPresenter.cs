@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine.UI;
 
 public class BuildMenuPresenter
 {
@@ -23,6 +22,12 @@ public class BuildMenuPresenter
     private void HandleButtonClicked(BuildMenuButtonData buttonData)
     {
         ItemSelected?.Invoke(buttonData);
+    }
+
+    public void RemoveItem(BuildMenuButtonData data)
+    {
+        model.Items.Remove(data);
+        view.RemoveButton(data);
     }
 
     public void SetItems(List<BuildMenuButtonData> buildMenuItems)

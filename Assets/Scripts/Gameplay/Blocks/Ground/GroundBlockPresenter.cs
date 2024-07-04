@@ -1,4 +1,6 @@
-﻿public class GroundBlockPresenter : IGridElement
+﻿using UnityEngine;
+
+public class GroundBlockPresenter : IGridElement
 {
     private readonly GroundBlockView view;
     private readonly GroundBlockModel model;
@@ -15,4 +17,9 @@
     }
 
     public bool IsSolid => false;
+    public void OnGridPosition(Vector3 position)
+    {
+        model.Position = position;
+        view.SetPosition(model.Position);
+    }
 }
