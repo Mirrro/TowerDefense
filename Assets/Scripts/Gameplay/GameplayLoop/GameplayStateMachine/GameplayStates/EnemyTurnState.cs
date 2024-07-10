@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class EnemyTurnState : IGameplayState
@@ -7,6 +8,7 @@ public class EnemyTurnState : IGameplayState
     private readonly EnemyManager enemyManager;
     public event Action StateComplete;
     public GameplayStateStatus GameplayStateStatus { get; set; }
+    private bool isWaveComplete;
 
     public EnemyTurnState(EnemyDeathRewardSystem deathRewardSystem, EnemyManager enemyManager)
     {
@@ -17,7 +19,12 @@ public class EnemyTurnState : IGameplayState
     public void Activate()
     {
         deathRewardSystem.Activate();
-        enemyManager.SpawnEnemy(new Vector2Int(0,0), new Vector2Int(29,14));
+        enemyManager.SendNextWave(OnWaveComplete).Forget();
+    }
+
+    private void OnWaveComplete()
+    {
+        isWaveComplete = true;
     }
 
     public void OnPause()
@@ -30,17 +37,20 @@ public class EnemyTurnState : IGameplayState
         throw new NotImplementedException();
     }
 
-
     public void Update()
     {
-        if (enemyManager.ActiveEnemiesCount <= 0)
+        if (isWaveComplete)
         {
-            StateComplete?.Invoke();
+            if (enemyManager.ActiveEnemiesCount <= 0)
+            {
+                StateComplete?.Invoke();
+            }
         }
     }
 
     public void Deactivate()
     {
         deathRewardSystem.Deactivate();
+        isWaveComplete = false;
     }
 }

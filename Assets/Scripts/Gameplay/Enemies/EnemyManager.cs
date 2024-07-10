@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class EnemyManager
@@ -11,9 +12,54 @@ public class EnemyManager
     public int ActiveEnemiesCount => activeEnemies.Count;
     private List<EnemyPresenter> activeEnemies = new ();
 
+    private List<Wave> waves = new List<Wave>()
+    {
+        new Wave(new List<EnemyTypes>()
+        {
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+        }),
+        new Wave(new List<EnemyTypes>()
+        {
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+        }),
+        new Wave(new List<EnemyTypes>()
+        {
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+        }),
+    };
+    private int currentWaveIndex = 0;
+
     public EnemyManager(GridManager gridManager)
     {
         this.gridManager = gridManager;
+    }
+
+    public async UniTask SendNextWave(Action callback = null)
+    {
+        if (currentWaveIndex >= waves.Count)
+        {
+            return;
+        }
+
+        foreach (var enemy in waves[currentWaveIndex].Enemies)
+        {
+            SpawnEnemy(new Vector2Int(0,0), new Vector2Int(29,14));
+            await UniTask.WaitForSeconds(1f);
+        }
+        callback?.Invoke();
+        currentWaveIndex++;
     }
 
     public void SpawnEnemy(Vector2Int startPos, Vector2Int endPosition)
@@ -44,5 +90,22 @@ public class EnemyManager
     {
         int distance = Math.Abs(target.x - origin.x) + Math.Abs(target.y - origin.y);
         return distance <= radius;
+    }
+}
+
+public enum EnemyTypes
+{
+    Warrior,
+    Rouge,
+    Mage
+}
+
+public class Wave
+{
+    public List<EnemyTypes> Enemies;
+
+    public Wave(List<EnemyTypes> enemies)
+    {
+        Enemies = enemies;
     }
 }
