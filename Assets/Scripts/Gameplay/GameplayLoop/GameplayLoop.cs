@@ -1,24 +1,34 @@
 ﻿using UnityEngine;
+using Zenject;
 
-public class GameplayLoop
+public class GameplayLoop : IInitializable
 {
     private readonly GameplayStateMachine gameplayStateMachine;
     private readonly PlayerTurnState playerTurnState;
     private readonly EnemyTurnState enemyTurnState;
+    private readonly InitializationState initializationState;
 
     public GameplayLoop(GameplayStateMachine gameplayStateMachine, PlayerTurnState playerTurnState,
-        EnemyTurnState enemyTurnState)
+        EnemyTurnState enemyTurnState, InitializationState initializationState)
     {
         this.gameplayStateMachine = gameplayStateMachine;
         this.playerTurnState = playerTurnState;
         this.enemyTurnState = enemyTurnState;
+        this.initializationState = initializationState;
     }
-
-    public void Start()
+    
+    public void Initialize()
     {
-        gameplayStateMachine.SwitchState(playerTurnState);
+        initializationState.StateComplete += HandleInitializationStateComplete;
         playerTurnState.StateComplete += HandlePlayerStateComplete;
         enemyTurnState.StateComplete += HandleEnemyStateComplete;
+        
+        gameplayStateMachine.SwitchState(initializationState);
+    }
+
+    private void HandleInitializationStateComplete()
+    {
+        gameplayStateMachine.SwitchState(playerTurnState);
     }
 
     private void HandlePlayerStateComplete()
@@ -41,10 +51,5 @@ public class GameplayLoop
     private bool VictoryCondition()
     {
         return false;
-    }
-
-    public void Update()
-    {
-        gameplayStateMachine.Update();
     }
 }

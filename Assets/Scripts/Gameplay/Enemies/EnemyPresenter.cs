@@ -1,13 +1,16 @@
 using UnityEngine;
 using UnityEngine.Events;
+using Zenject;
 using Vector3 = UnityEngine.Vector3;
 
 public class EnemyPresenter : IEnemyPresenter
 {
+    [Inject] private GridManager gridManager;
+    
     public UnityEvent Died = new ();
+    
     private EnemyModel model;
     private EnemyView view;
-    private GridManager gridManager;
 
     public Vector3 GetPosition()
     {
@@ -68,6 +71,11 @@ public class EnemyPresenter : IEnemyPresenter
     {
         var path = gridManager.GetPath(gridManager.WorldToGridPosition(model.position), model.gridTargetPosition);
         view.MoveTo(path[1]);
+    }
+    
+    public class Factory : PlaceholderFactory<EnemyView, EnemyModel, EnemyPresenter>
+    {
+        
     }
 }
 

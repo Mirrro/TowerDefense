@@ -1,8 +1,10 @@
-public class UIManager
-{
-    private readonly UIViewReferences uiViewReferences;
-    private readonly PlayerBank playerBank;
+using Zenject;
 
+public class UIManager : IInitializable
+{
+    [Inject] private readonly PlayerBank playerBank;
+    
+    private readonly UIViewReferences uiViewReferences;
     private PlayerMoneyPresenter playerMoneyPresenter;
     private EndTurnPresenter endTurnPresenter;
     private BuildMenuPresenter buildMenuPresenter;
@@ -10,16 +12,14 @@ public class UIManager
     public EndTurnPresenter EndTurnPresenter => endTurnPresenter;
     public BuildMenuPresenter BuildMenuPresenter => buildMenuPresenter;
     
-    public UIManager(UIViewReferences uiViewReferences, PlayerBank playerBank)
+    public UIManager(UIViewReferences uiViewReferences)
     {
         this.uiViewReferences = uiViewReferences;
-        this.playerBank = playerBank;
     }
 
     public void Initialize()
     {
-        playerMoneyPresenter =
-            new PlayerMoneyPresenter(playerBank, uiViewReferences.PlayerMoneyView, new PlayerMoneyModel());
+        playerMoneyPresenter = new PlayerMoneyPresenter(playerBank, uiViewReferences.PlayerMoneyView, new PlayerMoneyModel());
         endTurnPresenter = new EndTurnPresenter(new EndTurnModel(), uiViewReferences.EndTurnView);
         buildMenuPresenter = new BuildMenuPresenter(new BuildMenuModel(), uiViewReferences.BuildMenuView);
         

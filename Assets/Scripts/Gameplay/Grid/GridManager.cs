@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
-public class GridManager
+public class GridManager : IInitializable
 {
     public Grid Grid => grid;
     private Grid grid;
@@ -10,10 +11,11 @@ public class GridManager
     private PathFinding pathFinding = new ();
     private ConvertService convertService = new ();
     
-    public GridManager(Vector2Int gridSize)
+    
+    public void Initialize()
     {
         grid = new Grid();
-        grid.Initialize(gridSize);
+        grid.Initialize(new Vector2Int(30,15));
     }
 
     public List<Vector3> GetPath(Vector2Int start, Vector2Int end)

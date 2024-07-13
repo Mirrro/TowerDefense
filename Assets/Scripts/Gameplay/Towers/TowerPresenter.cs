@@ -1,36 +1,25 @@
 ﻿using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class TowerPresenter : IGridElement
 {
-    public bool IsSolid => true;
-    public void OnGridPosition(Vector3 position)
-    {
-        Debug.Log(position);
-        model.Position = position;
-        view.SetPosition(model.Position);
-    }
-
+    [Inject] private readonly EnemyManager enemyManager;
+    
     private readonly TowerModel model;
-    private readonly EnemyManager enemyManager;
     private readonly TowerView view;
 
-    private bool isCooldown => Time.unscaledTime < model.LastTimeFired + model.ReloadTime;
-
-    public TowerPresenter(TowerView view, TowerModel model, EnemyManager enemyManager)
+    public bool IsSolid => true;
+    
+    public TowerPresenter(TowerView view, TowerModel model)
     {
         this.model = model;
-        this.enemyManager = enemyManager;
         this.view = view;
     }
 
-    public void Initialize()
+    public void Tick()
     {
-        //view.SetPosition(model.Position);
-    }
-
-    public void Update()
-    {
+        Debug.Log("i am a tower");
         if (isCooldown) return;
         
         // Check for enemies in range
@@ -44,9 +33,23 @@ public class TowerPresenter : IGridElement
             Cooldown();
         }
     }
+    
+    private bool isCooldown => Time.unscaledTime < model.LastTimeFired + model.ReloadTime;
 
     private void Cooldown()
     {
         model.LastTimeFired = Time.unscaledTime;
+    }
+    
+    public void OnGridPosition(Vector3 position)
+    {
+        Debug.Log(position);
+        model.Position = position;
+        view.SetPosition(model.Position);
+    }
+
+    public class Factory : PlaceholderFactory<TowerView, TowerModel, TowerPresenter>
+    {
+        
     }
 }

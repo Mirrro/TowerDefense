@@ -1,4 +1,6 @@
-﻿public class GameplayStateMachine
+﻿using Zenject;
+
+public class GameplayStateMachine : ITickable
 {
     private IGameplayState activeState;
 
@@ -9,7 +11,7 @@
         activeState?.Activate();
     }
 
-    public void Update()
+    public void Tick()
     {
         if (activeState is {GameplayStateStatus: GameplayStateStatus.Running})
         {

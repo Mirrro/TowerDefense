@@ -1,6 +1,7 @@
 using UnityEngine;
+using Zenject;
 
-public class CameraPresenter
+public class CameraPresenter : ITickable
 {
     private readonly CameraView view;
     private readonly CameraModel model;
@@ -11,7 +12,7 @@ public class CameraPresenter
         this.model = model;
     }
 
-    public void Update()
+    public void Tick()
     {
         HandleMovement();
         HandleRotation();

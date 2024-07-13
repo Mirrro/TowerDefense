@@ -9,6 +9,7 @@ public class EnemyManager
     public event Action<EnemyPresenter> EnemyDied;
     
     private readonly GridManager gridManager;
+    private readonly EnemyBuilder enemyBuilder;
     public int ActiveEnemiesCount => activeEnemies.Count;
     private List<EnemyPresenter> activeEnemies = new ();
 
@@ -41,9 +42,10 @@ public class EnemyManager
     };
     private int currentWaveIndex = 0;
 
-    public EnemyManager(GridManager gridManager)
+    public EnemyManager(GridManager gridManager, EnemyBuilder enemyBuilder)
     {
         this.gridManager = gridManager;
+        this.enemyBuilder = enemyBuilder;
     }
 
     public async UniTask SendNextWave(Action callback = null)
@@ -64,8 +66,7 @@ public class EnemyManager
 
     public void SpawnEnemy(Vector2Int startPos, Vector2Int endPosition)
     {
-        var enemy = PresenterFactory.CreateEnemy(new EnemyModel(100), gridManager);
-        enemy.Initialize();
+        var enemy = enemyBuilder.CreateBasicEnemy();
         enemy.SetPosition(new Vector3(startPos.x, 0.3f, startPos.y));
         enemy.Move(endPosition);
         enemy.Died.AddListener(() => HandleDeath(enemy));

@@ -20,12 +20,4 @@ public static class PresenterFactory
         var container = Resources.Load<ViewContainer>(path);
         return new ObstacleBlockPresenter(Object.Instantiate(container.ObstacleBlockView, Vector3.zero, Quaternion.identity), model);
     }
-    
-    public static EnemyPresenter CreateEnemy(EnemyModel model, GridManager gridManager)
-    {
-        var container = Resources.Load<ViewContainer>(path);
-        return new EnemyPresenter(Object.Instantiate(container.EnemyView, Vector3.zero, Quaternion.identity), model, gridManager);
-    }
-    
-    
 }

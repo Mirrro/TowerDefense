@@ -1,7 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using Zenject;
 
-public class GridInteraction
+public class GridInteraction : ITickable
 {
     private readonly GridManager gridManager;
     private readonly MouseRayCast mouseRayCast;
@@ -17,7 +18,7 @@ public class GridInteraction
         this.mouseRayCast = mouseRayCast;
     }
 
-    public void Update()
+    public void Tick()
     {
         if (mouseRayCast.TryGetPosition(out var hit))
         {
