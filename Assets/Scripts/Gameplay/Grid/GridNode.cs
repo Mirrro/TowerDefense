@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class GridNode
 {
+    public event Action ElementAdded;
+    public event Action ElementRemoved;
     private List<IGridElement> gridElements = new List<IGridElement>();
 
     public Vector2Int Index => index;
@@ -19,6 +22,7 @@ public class GridNode
     {
         gridElements.Add(gridElement);
         gridElement.OnGridPosition(new Vector3(index.x, 0, index.y));
+        ElementAdded?.Invoke();
     }
 
     public void RemoveElement(IGridElement gridElement)
@@ -29,5 +33,6 @@ public class GridNode
         }
         
         gridElements.Remove(gridElement);
+        ElementRemoved?.Invoke();
     }
 }

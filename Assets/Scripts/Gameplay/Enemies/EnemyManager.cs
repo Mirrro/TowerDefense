@@ -7,11 +7,18 @@ using UnityEngine;
 public class EnemyManager
 {
     public event Action<EnemyPresenter> EnemyDied;
+    public event Action<EnemyPresenter> EnemyReachedGoal;
+    public event Action FinalWaveSend;
+    public Vector2Int StartPos => startPos;
+    public Vector2Int EndPos => endPos;
     
     private readonly GridManager gridManager;
     private readonly EnemyBuilder enemyBuilder;
     public int ActiveEnemiesCount => activeEnemies.Count;
     private List<EnemyPresenter> activeEnemies = new ();
+
+    private Vector2Int startPos = new Vector2Int(0,0);
+    private Vector2Int endPos = new Vector2Int(29, 7);
 
     private List<Wave> waves = new List<Wave>()
     {
@@ -20,6 +27,10 @@ public class EnemyManager
             EnemyTypes.Warrior,
             EnemyTypes.Warrior,
             EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
         }),
         new Wave(new List<EnemyTypes>()
         {
@@ -28,9 +39,69 @@ public class EnemyManager
             EnemyTypes.Warrior,
             EnemyTypes.Warrior,
             EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
         }),
         new Wave(new List<EnemyTypes>()
         {
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+        }),
+        new Wave(new List<EnemyTypes>()
+        {
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
+            EnemyTypes.Warrior,
             EnemyTypes.Warrior,
             EnemyTypes.Warrior,
             EnemyTypes.Warrior,
@@ -57,19 +128,25 @@ public class EnemyManager
 
         foreach (var enemy in waves[currentWaveIndex].Enemies)
         {
-            SpawnEnemy(new Vector2Int(0,0), new Vector2Int(29,14));
+            SpawnEnemy(startPos, endPos);
             await UniTask.WaitForSeconds(1f);
         }
         callback?.Invoke();
         currentWaveIndex++;
+        
+        if (currentWaveIndex == waves.Count)
+        {
+            FinalWaveSend?.Invoke();
+        }
     }
 
     public void SpawnEnemy(Vector2Int startPos, Vector2Int endPosition)
     {
         var enemy = enemyBuilder.CreateBasicEnemy();
-        enemy.SetPosition(new Vector3(startPos.x, 0.3f, startPos.y));
+        enemy.SetPosition(new Vector3(startPos.x, 0, startPos.y));
         enemy.Move(endPosition);
         enemy.Died.AddListener(() => HandleDeath(enemy));
+        enemy.ReachedGoal.AddListener(() => HandleEnemyReachedGoal(enemy));
         activeEnemies.Add(enemy);
     }
 
@@ -77,6 +154,13 @@ public class EnemyManager
     {
         activeEnemies.Remove(enemyPresenter);
         EnemyDied?.Invoke(enemyPresenter);
+    }
+
+    private void HandleEnemyReachedGoal(EnemyPresenter enemy)
+    {
+        EnemyReachedGoal?.Invoke(enemy);
+        activeEnemies.Remove(enemy);
+        enemy.StealGold();
     }
 
     public IEnumerable<EnemyPresenter> FindEnemiesOnGrid(Vector3 position, int radius)

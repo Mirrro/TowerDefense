@@ -5,20 +5,23 @@ using UnityEngine;
 public class EnemyTurnState : IGameplayState
 {
     private readonly EnemyDeathRewardSystem deathRewardSystem;
+    private readonly EnemyReachGoalSystem enemyReachGoalSystem;
     private readonly EnemyManager enemyManager;
     public event Action StateComplete;
     public GameplayStateStatus GameplayStateStatus { get; set; }
     private bool isWaveComplete;
 
-    public EnemyTurnState(EnemyDeathRewardSystem deathRewardSystem, EnemyManager enemyManager)
+    public EnemyTurnState(EnemyDeathRewardSystem deathRewardSystem, EnemyManager enemyManager, EnemyReachGoalSystem enemyReachGoalSystem)
     {
         this.deathRewardSystem = deathRewardSystem;
         this.enemyManager = enemyManager;
+        this.enemyReachGoalSystem = enemyReachGoalSystem;
     }
 
     public void Activate()
     {
         deathRewardSystem.Activate();
+        enemyReachGoalSystem.Activate();
         enemyManager.SendNextWave(OnWaveComplete).Forget();
     }
 
@@ -51,6 +54,7 @@ public class EnemyTurnState : IGameplayState
     public void Deactivate()
     {
         deathRewardSystem.Deactivate();
+        enemyReachGoalSystem.Deactivate();
         isWaveComplete = false;
     }
 }

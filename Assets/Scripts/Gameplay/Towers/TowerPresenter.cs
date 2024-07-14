@@ -19,7 +19,6 @@ public class TowerPresenter : IGridElement
 
     public void Tick()
     {
-        Debug.Log("i am a tower");
         if (isCooldown) return;
         
         // Check for enemies in range
@@ -43,7 +42,6 @@ public class TowerPresenter : IGridElement
     
     public void OnGridPosition(Vector3 position)
     {
-        Debug.Log(position);
         model.Position = position;
         view.SetPosition(model.Position);
     }

@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Zenject;
 
 public class GridManager : IInitializable
 {
+    public event Action ElementAdded;
+    public event Action ElementRemoved;
     public Grid Grid => grid;
     private Grid grid;
 
@@ -15,7 +18,19 @@ public class GridManager : IInitializable
     public void Initialize()
     {
         grid = new Grid();
-        grid.Initialize(new Vector2Int(30,15));
+        grid.Initialize(new Vector2Int(30,8));
+        grid.ElementAdded += HandleElementAdded;
+        grid.ElementRemoved += HandleElementRemoved;
+    }
+
+    private void HandleElementAdded()
+    {
+        ElementAdded?.Invoke();
+    }
+    
+    private void HandleElementRemoved()
+    {
+        ElementRemoved?.Invoke();
     }
 
     public List<Vector3> GetPath(Vector2Int start, Vector2Int end)

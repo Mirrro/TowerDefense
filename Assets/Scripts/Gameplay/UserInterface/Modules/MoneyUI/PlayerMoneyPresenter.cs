@@ -1,16 +1,15 @@
-﻿using UnityEngine;
-
+﻿
 public class PlayerMoneyPresenter
 {
-    private readonly PlayerBank playerBank;
     private readonly PlayerMoneyView view;
     private readonly PlayerMoneyModel model;
+    private readonly PlayerBank playerBank;
 
-    public PlayerMoneyPresenter(PlayerBank playerBank, PlayerMoneyView view, PlayerMoneyModel model)
+    public PlayerMoneyPresenter(PlayerMoneyView view, PlayerMoneyModel model, PlayerBank playerBank)
     {
-        this.playerBank = playerBank;
         this.view = view;
         this.model = model;
+        this.playerBank = playerBank;
     }
 
     public void Initialize()

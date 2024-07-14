@@ -2,7 +2,7 @@
 
 public class PlayerBank
 {
-    public event Action<int> CoinsChanged; 
+    public event Action<int> CoinsChanged;
     public int Coins
     {
         get => coins;

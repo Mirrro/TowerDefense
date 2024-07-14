@@ -17,7 +17,7 @@ public class TowerBuilder : ITickable
     {
         var container = Resources.Load<ViewContainer>(path);
         TowerPresenter towerPresenter = towerFactory.Create(Object.Instantiate(container.TowerView, Vector3.zero, Quaternion.identity),
-            new TowerModel(Vector3.zero, 10, 10, 1));
+            new TowerModel(Vector3.zero, 2, 10, 1));
         towerPresenters.Add(towerPresenter);
         return towerPresenter;
     }

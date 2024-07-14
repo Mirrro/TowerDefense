@@ -8,6 +8,7 @@ public class EnemyPresenter : IEnemyPresenter
     [Inject] private GridManager gridManager;
     
     public UnityEvent Died = new ();
+    public UnityEvent ReachedGoal = new ();
     
     private EnemyModel model;
     private EnemyView view;
@@ -50,16 +51,20 @@ public class EnemyPresenter : IEnemyPresenter
 
     public void ReceiveDamage(int amount)
     {
+        model.Health -= amount;
+        view.ReceiveDamage();
+        
         if (model.Health <= 0)
         {
             view.Die();
             Died?.Invoke();
+            view.DestinationReached.RemoveListener(HandleDestinationReached);
         }
-        else
-        {
-            model.Health -= amount;
-            view.ReceiveDamage();
-        }
+    }
+
+    public void StealGold()
+    {
+        view.Die();
     }
 
     private void HandlePositionChange(Vector3 position)
@@ -69,8 +74,15 @@ public class EnemyPresenter : IEnemyPresenter
 
     private void HandleDestinationReached()
     {
-        var path = gridManager.GetPath(gridManager.WorldToGridPosition(model.position), model.gridTargetPosition);
-        view.MoveTo(path[1]);
+        if (gridManager.WorldToGridPosition(model.position) == model.gridTargetPosition)
+        {
+            ReachedGoal?.Invoke();
+        }
+        else
+        {
+            var path = gridManager.GetPath(gridManager.WorldToGridPosition(model.position), model.gridTargetPosition);
+            view.MoveTo(path[1]);
+        }
     }
     
     public class Factory : PlaceholderFactory<EnemyView, EnemyModel, EnemyPresenter>

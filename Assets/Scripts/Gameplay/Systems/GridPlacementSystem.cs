@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -7,13 +7,17 @@ public class GridPlacementSystem
 {
     private readonly GridManager gridManager;
     private readonly GridInteraction gridInteraction;
-    
+    private readonly EnemyManager enemyManager;
+    private PathFinding pathFinding = new ();
+    private ConvertService convertService = new ();
+
     private readonly TaskQueue placementQueue = new ();
 
-    public GridPlacementSystem(GridManager gridManager, GridInteraction gridInteraction)
+    public GridPlacementSystem(GridManager gridManager, GridInteraction gridInteraction, EnemyManager enemyManager)
     {
         this.gridManager = gridManager;
         this.gridInteraction = gridInteraction;
+        this.enemyManager = enemyManager;
     }
 
     public void PlaceElement(IGridElement gridElement, Action callback)
@@ -28,7 +32,7 @@ public class GridPlacementSystem
         void HandleGridSelected(Vector2Int position)
         {
             GridNode selectedGridNode = gridManager.Grid.GridNodes[position.x, position.y];
-            if (!selectedGridNode.IsSolid)
+            if (!selectedGridNode.IsSolid && EnsurePath(position))
             {
                 selectedGridNode.AddGirdElement(gridElement);
                 gridInteraction.OnGridCellSelected -= HandleGridSelected;
@@ -40,31 +44,12 @@ public class GridPlacementSystem
         await completionSource.Task;
         gridInteraction.OnGridCellSelected -= HandleGridSelected;
     }
-}
 
-public class TaskQueue
-{
-    private ConcurrentQueue<(Func<UniTask>, Action)> taskQueue = new ();
-    private bool isProcessing = false;
-
-    public void EnqueueTask(Func<UniTask> task, Action callback = null)
+    private bool EnsurePath(Vector2Int position)
     {
-        taskQueue.Enqueue((task, callback));
-        if (!isProcessing)
-        {
-            ProcessNextTask().Forget();
-        }
-    }
-
-    private async UniTaskVoid ProcessNextTask()
-    {
-        isProcessing = true;
-        while (taskQueue.TryDequeue(out var taskWithCallback))
-        {
-            var (task, callback) = taskWithCallback;
-            await task();
-            callback?.Invoke();
-        }
-        isProcessing = false;
+        var convertedGrid = convertService.ConvertGridNodes(gridManager.Grid.GridNodes);
+        convertedGrid[position.x, position.y].IsWalkable = false;
+        var path = pathFinding.GetPath(convertedGrid, enemyManager.StartPos, enemyManager.EndPos);
+        return path.Any();
     }
 }
