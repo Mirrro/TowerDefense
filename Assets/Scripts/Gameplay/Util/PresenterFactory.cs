@@ -1,23 +1,38 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using Zenject;
+using Object = UnityEngine.Object;
 
-public static class PresenterFactory
+public class PresenterFactory : ITickable
 {
     private const string path = "ViewContainer";
-    public static WaterBlockPresenter CreateWaterBlockPresenter(WaterBlockModel model)
+    private List<ITickable> tickables = new List<ITickable>();
+
+    public WaterBlockPresenter CreateWaterBlockPresenter(WaterBlockModel model)
     {
         var container = Resources.Load<ViewContainer>(path);
-        return new WaterBlockPresenter(Object.Instantiate(container.WaterBlockView, Vector3.zero, Quaternion.identity), model);
+        var presenter = new WaterBlockPresenter(Object.Instantiate(container.WaterBlockView, Vector3.zero, Quaternion.identity), model);
+        tickables.Add(presenter);
+        return presenter;
     }
     
-    public static GroundBlockPresenter CreateGroundBlockPresenter(GroundBlockModel model)
+    public GroundBlockPresenter CreateGroundBlockPresenter(GroundBlockModel model)
     {
         var container = Resources.Load<ViewContainer>(path);
         return new GroundBlockPresenter(Object.Instantiate(container.GroundBlockView, Vector3.zero, Quaternion.identity), model);
     }
     
-    public static ObstacleBlockPresenter CreateObstacleBlockPresenter(ObstacleBlockModel model)
+    public ObstacleBlockPresenter CreateObstacleBlockPresenter(ObstacleBlockModel model)
     {
         var container = Resources.Load<ViewContainer>(path);
         return new ObstacleBlockPresenter(Object.Instantiate(container.ObstacleBlockView, Vector3.zero, Quaternion.identity), model);
+    }
+
+    public void Tick()
+    {
+        foreach (var tickable in tickables)
+        {
+            tickable.Tick();
+        }
     }
 }

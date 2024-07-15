@@ -12,6 +12,7 @@ public class GameplayInstaller : MonoInstaller
     {
         Container.BindInterfacesAndSelfTo<GridManager>().AsSingle();        
         Container.BindInterfacesAndSelfTo<LevelGenerator>().AsSingle();
+        Container.BindInterfacesAndSelfTo<PresenterFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<CameraPresenter>().AsSingle().WithArguments(cameraView, new CameraModel());
         Container.BindInterfacesAndSelfTo<PlayerBank>().AsSingle();
         Container.BindInterfacesAndSelfTo<PlayerHealth>().AsSingle();

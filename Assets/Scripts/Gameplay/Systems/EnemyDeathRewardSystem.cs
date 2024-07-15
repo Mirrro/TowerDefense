@@ -21,6 +21,6 @@
 
     private void HandleEnemyDeath(EnemyPresenter obj)
     {
-        playerBank.AddMoney(10);
+        playerBank.AddMoney(25);
     }
 }

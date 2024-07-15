@@ -18,9 +18,19 @@ public class PlayerMoneyPresenter
         HandleCoinsChanged(playerBank.Coins);
     }
 
-    private void HandleCoinsChanged(int obj)
+    private void HandleCoinsChanged(int money)
     {
-        model.MoneyCount = obj;
+        var previousMoneyCount = model.MoneyCount;
+        model.MoneyCount = money;
         view.UpdateMoneyTextfield(model.MoneyCount.ToString());
+        
+        if (previousMoneyCount > money)
+        {
+            view.FlashRed();
+        }
+        else
+        {
+            view.FlashWhite();
+        }
     }
 }

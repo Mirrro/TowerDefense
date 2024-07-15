@@ -21,5 +21,6 @@ public class TowerView : MonoBehaviour
     public void SetPosition(Vector3 position)
     {
         transform.position = position;
+        transform.DOPunchScale(Vector3.one * .3f, .5f, 10);
     }
 }

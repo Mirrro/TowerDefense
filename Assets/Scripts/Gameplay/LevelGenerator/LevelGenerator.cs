@@ -5,6 +5,8 @@ using Zenject;
 public class LevelGenerator
 {
     [Inject] private readonly EnemyManager enemyManager;
+    [Inject] private readonly PresenterFactory presenterFactory;
+    
     private PathFinding pathFinding = new ();
     private ConvertService convertService = new ();
     
@@ -20,7 +22,7 @@ public class LevelGenerator
                 {
                     var model = new GroundBlockModel();
                     model.Position = new Vector3(x, 0, y);
-                    var presenter = PresenterFactory.CreateGroundBlockPresenter(model);
+                    var presenter = presenterFactory.CreateGroundBlockPresenter(model);
                     presenter.Initialize();
                     grid.GridNodes[x,y].AddGirdElement(presenter);
                     continue;
@@ -34,7 +36,7 @@ public class LevelGenerator
                 {
                     var model = new WaterBlockModel();
                     model.Position = new Vector3(x, 0, y);
-                    var presenter = PresenterFactory.CreateWaterBlockPresenter(model);
+                    var presenter = presenterFactory.CreateWaterBlockPresenter(model);
                     presenter.Initialize();
                     grid.GridNodes[x,y].AddGirdElement(presenter);
                 }
@@ -42,7 +44,7 @@ public class LevelGenerator
                 {
                     var model = new ObstacleBlockModel();
                     model.Position = new Vector3(x, 0, y);
-                    var presenter = PresenterFactory.CreateObstacleBlockPresenter(model);
+                    var presenter = presenterFactory.CreateObstacleBlockPresenter(model);
                     presenter.Initialize();
                     grid.GridNodes[x,y].AddGirdElement(presenter);
                 }
@@ -50,7 +52,7 @@ public class LevelGenerator
                 {
                     var model = new GroundBlockModel();
                     model.Position = new Vector3(x, 0, y);
-                    var presenter = PresenterFactory.CreateGroundBlockPresenter(model);
+                    var presenter = presenterFactory.CreateGroundBlockPresenter(model);
                     presenter.Initialize();
                     grid.GridNodes[x,y].AddGirdElement(presenter);
                 }

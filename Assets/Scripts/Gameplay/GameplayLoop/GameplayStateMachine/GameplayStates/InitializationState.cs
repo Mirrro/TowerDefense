@@ -14,7 +14,7 @@ public class InitializationState : IGameplayState
     public void Activate()
     {
         levelGenerator.PopulateGrid(gridManager.Grid);
-        playerBank.AddMoney(1000);
+        playerBank.AddMoney(1500);
         playerHealth.AddHealth(10);
         uiManager.Initialize();
         StateComplete?.Invoke();

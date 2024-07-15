@@ -16,7 +16,7 @@ public class EnemyBuilder
     {
         var container = Resources.Load<ViewContainer>(path);
         EnemyPresenter towerPresenter = enemyFactory.Create(Object.Instantiate(container.EnemyView, Vector3.zero, Quaternion.identity),
-            new EnemyModel(100));
+            new EnemyModel(200));
         towerPresenter.Initialize();
         towerPresenters.Add(towerPresenter);
         return towerPresenter;

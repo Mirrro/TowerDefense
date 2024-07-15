@@ -1,7 +1,8 @@
 
 using UnityEngine;
+using Zenject;
 
-public class WaterBlockPresenter : IGridElement
+public class WaterBlockPresenter : IGridElement, ITickable
 {
     private readonly WaterBlockView view;
     private readonly WaterBlockModel model;
@@ -22,5 +23,15 @@ public class WaterBlockPresenter : IGridElement
     public void Initialize()
     {
         view.SetPosition(model.Position);
+    }
+
+    public void Tick()
+    {
+        if (Time.time >= model.LastTimeParticleActivated + model.ParticleCooldown)
+        {
+            view.FireLava();
+            model.ParticleCooldown = Random.Range(3, 200);
+            model.LastTimeParticleActivated = Time.time;
+        }
     }
 }
