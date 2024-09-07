@@ -20,8 +20,6 @@ public class PlayerTurnState : IGameplayState
 
     public void Activate()
     {
-        towerBuildSystem.SetItems(container.Items);
-        towerBuildSystem.Activate();
         enemyPathPresenter.Activate();
         uiManager.EndTurnPresenter.ActivateButton(true);
         uiManager.EndTurnPresenter.TurnEnded += HandleTurnEnd;
@@ -34,12 +32,10 @@ public class PlayerTurnState : IGameplayState
 
     public void OnPause()
     {
-        towerBuildSystem.Deactivate();
     }
 
     public void OnUnpause()
     {
-        towerBuildSystem.Activate();
     }
 
     public void Update()
@@ -48,7 +44,6 @@ public class PlayerTurnState : IGameplayState
 
     public void Deactivate()
     {
-        towerBuildSystem.Deactivate();
         enemyPathPresenter.Deactivate();
         uiManager.EndTurnPresenter.ActivateButton(false);
         uiManager.EndTurnPresenter.TurnEnded -= HandleTurnEnd;

@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 using Zenject;
+using Object = UnityEngine.Object;
 
-public class TowerPresenter : IGridElement
+public class TowerPresenter : IGridElement, IDisposable
 {
     [Inject] private readonly EnemyManager enemyManager;
     
@@ -49,5 +51,10 @@ public class TowerPresenter : IGridElement
     public class Factory : PlaceholderFactory<TowerView, TowerModel, TowerPresenter>
     {
         
+    }
+
+    public void Dispose()
+    {
+        Object.Destroy(view.gameObject);
     }
 }

@@ -67,7 +67,7 @@ public class CameraPresenter : ITickable
         float scroll = Input.mouseScrollDelta.y * model.ScrollSpeed * Time.deltaTime;
         Vector3 newCameraPosition = model.CameraPosition - new Vector3(0, scroll, -scroll * 0.5f);
         
-        newCameraPosition.y = Mathf.Clamp(newCameraPosition.y, 0, 10);
+        newCameraPosition.y = Mathf.Clamp(newCameraPosition.y, 2, 10);
         newCameraPosition.z = Mathf.Clamp(newCameraPosition.z, -10, -1);
 
         model.CameraPosition = newCameraPosition;

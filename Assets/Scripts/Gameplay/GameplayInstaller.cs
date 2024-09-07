@@ -7,6 +7,7 @@ public class GameplayInstaller : MonoInstaller
     [SerializeField] private UIViewReferences uiViewReferences;
     [SerializeField] private BuildMenuItemsContainer buildMenuItemsContainer;
     [SerializeField] private EnemyPathView enemyPathView;
+    [SerializeField] private TestSetup testSetup;
     
     public override void InstallBindings()
     {
@@ -18,6 +19,7 @@ public class GameplayInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<PlayerHealth>().AsSingle();
         Container.BindInterfacesAndSelfTo<UIManager>().AsSingle().WithArguments(uiViewReferences);
         Container.BindInterfacesAndSelfTo<EnemyPathPresenter>().AsSingle().WithArguments(enemyPathView, new EnemyPathModel());
+        Container.BindInstance(testSetup);
         
         Container.BindInterfacesAndSelfTo<EnemyManager>().AsSingle();
         Container.BindInterfacesAndSelfTo<EnemyDeathRewardSystem>().AsSingle();   
@@ -34,6 +36,8 @@ public class GameplayInstaller : MonoInstaller
         
         Container.BindFactory<TowerView, TowerModel, TowerPresenter, TowerPresenter.Factory>().AsSingle();
         Container.BindFactory<EnemyView, EnemyModel, EnemyPresenter, EnemyPresenter.Factory>().AsSingle();
+        Container.BindFactory<BuildBasicTowerTask, BuildBasicTowerTask.Factory>().AsSingle();
+        Container.BindFactory<HelloWorldGameplayTask, HelloWorldGameplayTask.Factory>().AsSingle();
 
         Container.BindInterfacesAndSelfTo<GameplayLoop>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<GameplayStateMachine>().AsSingle();

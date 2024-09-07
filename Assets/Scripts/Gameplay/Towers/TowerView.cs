@@ -6,6 +6,8 @@ public class TowerView : MonoBehaviour
 {
     [SerializeField] private GameObject bulletPrefab;
 
+    private Tween placementTween;
+
     public UnityEvent Hit;
     public Tween Fire(Transform[] targets)
     {
@@ -21,6 +23,7 @@ public class TowerView : MonoBehaviour
     public void SetPosition(Vector3 position)
     {
         transform.position = position;
-        transform.DOPunchScale(Vector3.one * .3f, .5f, 10);
+        placementTween?.Kill(true);
+        placementTween = transform.DOPunchScale(Vector3.one * .3f, .5f, 10);
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -11,8 +11,6 @@ public class GridPlacementSystem
     private PathFinding pathFinding = new ();
     private ConvertService convertService = new ();
 
-    private readonly TaskQueue placementQueue = new ();
-
     public GridPlacementSystem(GridManager gridManager, GridInteraction gridInteraction, EnemyManager enemyManager)
     {
         this.gridManager = gridManager;
@@ -20,17 +18,24 @@ public class GridPlacementSystem
         this.enemyManager = enemyManager;
     }
 
-    public void PlaceElement(IGridElement gridElement, Action callback)
-    {
-        placementQueue.EnqueueTask(() => PlaceElementTask(gridElement), callback);
-    }
-
-    private async UniTask PlaceElementTask(IGridElement gridElement)
+    public async UniTask UserPlaceElement(IGridElement gridElement, CancellationToken cancellationToken)
     {
         var completionSource = new UniTaskCompletionSource();
         
+        cancellationToken.Register(() =>
+        {
+            gridInteraction.OnGridCellSelected -= HandleGridSelected;
+            completionSource.TrySetCanceled();
+        });
+        
         void HandleGridSelected(Vector2Int position)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                completionSource.TrySetCanceled();
+                return;
+            }
+            
             GridNode selectedGridNode = gridManager.Grid.GridNodes[position.x, position.y];
             if (!selectedGridNode.IsSolid && EnsurePath(position))
             {
