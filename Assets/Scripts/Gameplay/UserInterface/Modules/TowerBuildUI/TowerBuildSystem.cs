@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gameplay.Towers.MVP;
 
 public class TowerBuildSystem
 {
@@ -21,7 +22,7 @@ public class TowerBuildSystem
                 presenter = towerBuilder.CreateBasicTower();
                 break;
             case Towers.TowerB:
-                presenter = towerBuilder.CreateBasicTower();
+                presenter = towerBuilder.CreateSpecialTower();
                 break;
             case Towers.TowerC:
                 presenter = towerBuilder.CreateBasicTower();

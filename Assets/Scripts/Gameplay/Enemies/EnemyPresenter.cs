@@ -97,5 +97,7 @@ public interface IEnemyPresenter
     public Transform GetTransform();
     public void Initialize();
     public void Move(Vector2Int target);
+
+    public void StealGold();
     public void ReceiveDamage(int amount);
 }

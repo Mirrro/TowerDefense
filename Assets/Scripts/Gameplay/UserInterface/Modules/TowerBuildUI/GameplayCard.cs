@@ -1,21 +1,27 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
 
 public class GameplayCard
 {
-    private GameplayTask gameplayTask;
-
-    public GameplayCard(GameplayTask gameplayTask)
+    public int Cost;
+    
+    private CancellationTokenSource cts;
+    private IGameplayTask gameplayTask;
+    
+    public GameplayCard(IGameplayTask gameplayTask)
     {
         this.gameplayTask = gameplayTask;
     }
 
-    public void Execute()
+    public async UniTask Execute()
     {
-        gameplayTask.Execute().Forget();
+        cts?.Cancel();
+        cts = new CancellationTokenSource();
+        await gameplayTask.Execute(cts.Token);
     }
 
     public void Cancel()
     {
-        gameplayTask?.Cancel();
+        cts?.Cancel();
     } 
 }

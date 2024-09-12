@@ -19,7 +19,7 @@
         enemyManager.EnemyReachedGoal -= HandleEnemyDeath;
     }
 
-    private void HandleEnemyDeath(EnemyPresenter _)
+    private void HandleEnemyDeath(IEnemyPresenter enemyPresenter)
     {
         playerHealth.RemoveHealth(1);
     }

@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class EnemyManager
 {
-    public event Action<EnemyPresenter> EnemyDied;
-    public event Action<EnemyPresenter> EnemyReachedGoal;
+    public event Action<IEnemyPresenter> EnemyDied;
+    public event Action<IEnemyPresenter> EnemyReachedGoal;
     public event Action FinalWaveSend;
     public Vector2Int StartPos => startPos;
     public Vector2Int EndPos => endPos;
@@ -15,7 +15,7 @@ public class EnemyManager
     private readonly GridManager gridManager;
     private readonly EnemyBuilder enemyBuilder;
     public int ActiveEnemiesCount => activeEnemies.Count;
-    private List<EnemyPresenter> activeEnemies = new ();
+    private List<IEnemyPresenter> activeEnemies = new ();
 
     private Vector2Int startPos = new Vector2Int(0,0);
     private Vector2Int endPos = new Vector2Int(29, 7);
@@ -126,9 +126,9 @@ public class EnemyManager
             return;
         }
 
-        foreach (var enemy in waves[currentWaveIndex].Enemies)
+        foreach (var enemyType in waves[currentWaveIndex].Enemies)
         {
-            SpawnEnemy(startPos, endPos);
+            SpawnEnemy(enemyType, startPos, endPos);
             await UniTask.WaitForSeconds(1f);
         }
         callback?.Invoke();
@@ -140,7 +140,7 @@ public class EnemyManager
         }
     }
 
-    public void SpawnEnemy(Vector2Int startPos, Vector2Int endPosition)
+    public void SpawnEnemy(EnemyTypes enemyTypes, Vector2Int startPos, Vector2Int endPosition)
     {
         var enemy = enemyBuilder.CreateBasicEnemy();
         enemy.SetPosition(new Vector3(startPos.x, 0, startPos.y));
@@ -150,20 +150,20 @@ public class EnemyManager
         activeEnemies.Add(enemy);
     }
 
-    private void HandleDeath(EnemyPresenter enemyPresenter)
+    private void HandleDeath(IEnemyPresenter enemyPresenter)
     {
         activeEnemies.Remove(enemyPresenter);
         EnemyDied?.Invoke(enemyPresenter);
     }
 
-    private void HandleEnemyReachedGoal(EnemyPresenter enemy)
+    private void HandleEnemyReachedGoal(IEnemyPresenter enemy)
     {
         EnemyReachedGoal?.Invoke(enemy);
         activeEnemies.Remove(enemy);
         enemy.StealGold();
     }
 
-    public IEnumerable<EnemyPresenter> FindEnemiesOnGrid(Vector3 position, int radius)
+    public IEnumerable<IEnemyPresenter> FindEnemiesOnGrid(Vector3 position, int radius)
     {
         return activeEnemies.Where(enemy => IsInRadius(
             origin: gridManager.WorldToGridPosition(position),

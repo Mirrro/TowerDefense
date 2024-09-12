@@ -49,8 +49,7 @@ public class BuildMenuButtonData
 {
     public Sprite icon;
     public string name;
-    public GameplayTask GameplayTask;
-    
+
     public override bool Equals(object obj)
     {
         if (obj is BuildMenuButtonData other)

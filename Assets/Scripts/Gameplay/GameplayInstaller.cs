@@ -1,3 +1,6 @@
+using Gameplay.Towers.MVP;
+using Gameplay.Towers.StateMachine;
+using Gameplay.Towers.Strategies;
 using UnityEngine;
 using Zenject;
 
@@ -34,9 +37,17 @@ public class GameplayInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<TowerBuilder>().AsSingle();
         Container.BindInterfacesAndSelfTo<EnemyBuilder>().AsSingle();
         
-        Container.BindFactory<TowerView, TowerModel, TowerPresenter, TowerPresenter.Factory>().AsSingle();
+        // Tower factory
+        Container.BindFactory<TowerStateMachine, TowerView, TowerModel, TowerPresenter, TowerPresenter.Factory>().AsSingle();
+        // tower strategies
+        Container.BindFactory<SingleTargetAttackingStrategy, SingleTargetAttackingStrategy.Factory>().AsSingle();
+        Container.BindFactory<TowerCooldownStrategy, TowerCooldownStrategy.Factory>().AsSingle();
+        Container.BindFactory<SimpleSortingStrategy, SimpleSortingStrategy.Factory>().AsSingle();
+        Container.BindFactory<TowerDetectingStrategy, TowerDetectingStrategy.Factory>().AsSingle();
+        
         Container.BindFactory<EnemyView, EnemyModel, EnemyPresenter, EnemyPresenter.Factory>().AsSingle();
-        Container.BindFactory<BuildBasicTowerTask, BuildBasicTowerTask.Factory>().AsSingle();
+        Container.BindFactory<BuildTowerATask, BuildTowerATask.Factory>().AsSingle();
+        Container.BindFactory<BuildTowerBTask, BuildTowerBTask.Factory>().AsSingle();
         Container.BindFactory<HelloWorldGameplayTask, HelloWorldGameplayTask.Factory>().AsSingle();
 
         Container.BindInterfacesAndSelfTo<GameplayLoop>().AsSingle().NonLazy();

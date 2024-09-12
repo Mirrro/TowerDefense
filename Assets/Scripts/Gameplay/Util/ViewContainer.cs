@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Gameplay.Towers.MVP;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "ViewContainer", menuName = "ScriptableObjects/SpawnManagerScriptableObject", order = 1)]
 public class ViewContainer : ScriptableObject
@@ -17,4 +18,8 @@ public class ViewContainer : ScriptableObject
     
     [SerializeField] private TowerView towerView;
     public TowerView TowerView => towerView;
+    
+    [SerializeField] private TowerView towerAView;
+    public TowerView TowerAView => towerAView;
+    
 }

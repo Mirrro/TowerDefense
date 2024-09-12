@@ -19,7 +19,7 @@
         enemyManager.EnemyDied -= HandleEnemyDeath;
     }
 
-    private void HandleEnemyDeath(EnemyPresenter obj)
+    private void HandleEnemyDeath(IEnemyPresenter obj)
     {
         playerBank.AddMoney(25);
     }

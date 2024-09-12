@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -6,25 +7,36 @@ public class TestSetup : MonoBehaviour
 {
     [SerializeField] private Button executeBtn;
     [SerializeField] private Button cancelBtn;
-    [Inject] private BuildBasicTowerTask.Factory bBFactory;
+    
+    [Inject] private BuildTowerATask.Factory buildTowerATaskFactory;
+    [Inject] private BuildTowerBTask.Factory buildTowerBTaskFactory;
     [Inject] private HelloWorldGameplayTask.Factory hWFactory;
-    private GameplayCardDeck deck = new GameplayCardDeck();
+    [Inject] private PlayerBank playerBank;
+    
+    private GameplayCardDeck deck = new ();
     private GameplayCard activeCard;
     
 
     private void Awake()
     {
-        deck.AddGameplayCard(new GameplayCard(bBFactory.Create()));
+        deck.AddGameplayCard(new GameplayCard(buildTowerATaskFactory.Create()));
         deck.AddGameplayCard(new GameplayCard(hWFactory.Create()));
-        executeBtn.onClick.AddListener(OnExecute);
+        deck.AddGameplayCard(new GameplayCard(buildTowerBTaskFactory.Create()));
+        
+        executeBtn.onClick.AddListener(() => OnExecute().Forget());
         cancelBtn.onClick.AddListener(OnCancel);
     }
 
-    private void OnExecute()
+    private async UniTask OnExecute()
     {
         activeCard?.Cancel();
         activeCard = deck.DrawRandom();
-        activeCard.Execute();
+        
+        if (activeCard.Cost <= playerBank.Coins)
+        {
+            await activeCard.Execute();
+            playerBank.RemoveMoney(activeCard.Cost);
+        }
     }
 
     private void OnCancel()
