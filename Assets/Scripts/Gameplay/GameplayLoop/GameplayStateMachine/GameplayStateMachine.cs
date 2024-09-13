@@ -1,33 +1,37 @@
-﻿using Zenject;
+﻿using Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates;
+using Zenject;
 
-public class GameplayStateMachine : ITickable
+namespace Gameplay.GameplayLoop.GameplayStateMachine
 {
-    private IGameplayState activeState;
-
-    public void SwitchState(IGameplayState gameplayState)
+    public class GameplayStateMachine : ITickable
     {
-        activeState?.Deactivate();
-        activeState = gameplayState;
-        activeState?.Activate();
-    }
+        private IGameplayState activeState;
 
-    public void Tick()
-    {
-        if (activeState is {GameplayStateStatus: GameplayStateStatus.Running})
+        public void SwitchState(IGameplayState gameplayState)
         {
-            activeState?.Update();
+            activeState?.Deactivate();
+            activeState = gameplayState;
+            activeState?.Activate();
         }
-    }
 
-    public void Pause()
-    {
-        activeState.OnPause();
-        activeState.GameplayStateStatus = GameplayStateStatus.Paused;
-    }
+        public void Tick()
+        {
+            if (activeState is {GameplayStateStatus: GameplayStateStatus.Running})
+            {
+                activeState?.Update();
+            }
+        }
 
-    public void Unpause()
-    {
-        activeState.OnUnpause();
-        activeState.GameplayStateStatus = GameplayStateStatus.Running;
+        public void Pause()
+        {
+            activeState.OnPause();
+            activeState.GameplayStateStatus = GameplayStateStatus.Paused;
+        }
+
+        public void Unpause()
+        {
+            activeState.OnUnpause();
+            activeState.GameplayStateStatus = GameplayStateStatus.Running;
+        }
     }
 }

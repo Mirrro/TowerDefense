@@ -1,60 +1,64 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
+using Gameplay.Enemies;
+using Gameplay.Systems;
 
-public class EnemyTurnState : IGameplayState
+namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
 {
-    private readonly EnemyDeathRewardSystem deathRewardSystem;
-    private readonly EnemyReachGoalSystem enemyReachGoalSystem;
-    private readonly EnemyManager enemyManager;
-    public event Action StateComplete;
-    public GameplayStateStatus GameplayStateStatus { get; set; }
-    private bool isWaveComplete;
-
-    public EnemyTurnState(EnemyDeathRewardSystem deathRewardSystem, EnemyManager enemyManager, EnemyReachGoalSystem enemyReachGoalSystem)
+    public class EnemyTurnState : IGameplayState
     {
-        this.deathRewardSystem = deathRewardSystem;
-        this.enemyManager = enemyManager;
-        this.enemyReachGoalSystem = enemyReachGoalSystem;
-    }
+        private readonly EnemyDeathRewardSystem deathRewardSystem;
+        private readonly EnemyReachGoalSystem enemyReachGoalSystem;
+        private readonly EnemyManager enemyManager;
+        public event Action StateComplete;
+        public GameplayStateStatus GameplayStateStatus { get; set; }
+        private bool isWaveComplete;
 
-    public void Activate()
-    {
-        deathRewardSystem.Activate();
-        enemyReachGoalSystem.Activate();
-        enemyManager.SendNextWave(OnWaveComplete).Forget();
-    }
-
-    private void OnWaveComplete()
-    {
-        isWaveComplete = true;
-    }
-
-    public void OnPause()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnUnpause()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Update()
-    {
-        if (isWaveComplete)
+        public EnemyTurnState(EnemyDeathRewardSystem deathRewardSystem, EnemyManager enemyManager, EnemyReachGoalSystem enemyReachGoalSystem)
         {
-            if (enemyManager.ActiveEnemiesCount <= 0)
+            this.deathRewardSystem = deathRewardSystem;
+            this.enemyManager = enemyManager;
+            this.enemyReachGoalSystem = enemyReachGoalSystem;
+        }
+
+        public void Activate()
+        {
+            deathRewardSystem.Activate();
+            enemyReachGoalSystem.Activate();
+            enemyManager.SendNextWave(OnWaveComplete).Forget();
+        }
+
+        private void OnWaveComplete()
+        {
+            isWaveComplete = true;
+        }
+
+        public void OnPause()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnUnpause()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update()
+        {
+            if (isWaveComplete)
             {
-                StateComplete?.Invoke();
+                if (enemyManager.ActiveEnemiesCount <= 0)
+                {
+                    StateComplete?.Invoke();
+                }
             }
         }
-    }
 
-    public void Deactivate()
-    {
-        deathRewardSystem.Deactivate();
-        enemyReachGoalSystem.Deactivate();
-        isWaveComplete = false;
+        public void Deactivate()
+        {
+            deathRewardSystem.Deactivate();
+            enemyReachGoalSystem.Deactivate();
+            isWaveComplete = false;
+        }
     }
 }

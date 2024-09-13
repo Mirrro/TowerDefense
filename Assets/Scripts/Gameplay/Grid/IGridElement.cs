@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
-public interface IGridElement
+namespace Gameplay.Grid
 {
-    bool IsSolid { get; }
+    public interface IGridElement
+    {
+        bool IsSolid { get; }
 
-    public void OnGridPosition(Vector3 position);
+        public void OnGridPosition(Vector3 position);
+    }
 }

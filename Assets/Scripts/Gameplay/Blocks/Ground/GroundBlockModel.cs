@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public class GroundBlockModel
+namespace Gameplay.Blocks.Ground
 {
-    public Vector3 Position;
+    public class GroundBlockModel
+    {
+        public Vector3 Position;
+    }
 }

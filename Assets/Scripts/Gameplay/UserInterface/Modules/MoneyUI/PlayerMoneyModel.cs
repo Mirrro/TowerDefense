@@ -1,4 +1,7 @@
-﻿public class PlayerMoneyModel
+﻿namespace Gameplay.UserInterface.Modules.MoneyUI
 {
-    public int MoneyCount = 0;
+    public class PlayerMoneyModel
+    {
+        public int MoneyCount = 0;
+    }
 }

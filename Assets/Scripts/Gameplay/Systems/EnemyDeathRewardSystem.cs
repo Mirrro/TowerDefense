@@ -1,26 +1,32 @@
-﻿public class EnemyDeathRewardSystem
+﻿using Gameplay.Enemies;
+using Gameplay.Player;
+
+namespace Gameplay.Systems
 {
-    private readonly PlayerBank playerBank;
-    private readonly EnemyManager enemyManager;
-
-    public EnemyDeathRewardSystem(PlayerBank playerBank, EnemyManager enemyManager)
+    public class EnemyDeathRewardSystem
     {
-        this.playerBank = playerBank;
-        this.enemyManager = enemyManager;
-    }
+        private readonly PlayerBank playerBank;
+        private readonly EnemyManager enemyManager;
 
-    public void Activate()
-    {
-        enemyManager.EnemyDied += HandleEnemyDeath;
-    }
+        public EnemyDeathRewardSystem(PlayerBank playerBank, EnemyManager enemyManager)
+        {
+            this.playerBank = playerBank;
+            this.enemyManager = enemyManager;
+        }
 
-    public void Deactivate()
-    {
-        enemyManager.EnemyDied -= HandleEnemyDeath;
-    }
+        public void Activate()
+        {
+            enemyManager.EnemyDied += HandleEnemyDeath;
+        }
 
-    private void HandleEnemyDeath(IEnemyPresenter obj)
-    {
-        playerBank.AddMoney(25);
+        public void Deactivate()
+        {
+            enemyManager.EnemyDied -= HandleEnemyDeath;
+        }
+
+        private void HandleEnemyDeath(IEnemyPresenter obj)
+        {
+            playerBank.AddMoney(25);
+        }
     }
 }

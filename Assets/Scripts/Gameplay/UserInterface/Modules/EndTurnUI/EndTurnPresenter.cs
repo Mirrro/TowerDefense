@@ -1,32 +1,35 @@
 using System;
 
-public class EndTurnPresenter
+namespace Gameplay.UserInterface.Modules.EndTurnUI
 {
-    private readonly EndTurnModel model;
-    private readonly EndTurnView view;
-
-    public event Action TurnEnded;
-
-    public EndTurnPresenter(EndTurnModel model, EndTurnView view)
+    public class EndTurnPresenter
     {
-        this.model = model;
-        this.view = view;
-    }
+        private readonly EndTurnModel model;
+        private readonly EndTurnView view;
 
-    public void Initialize()
-    {
-        view.ButtonClicked += HandleButtonClicked;
-        ActivateButton(true);
-    }
+        public event Action TurnEnded;
 
-    private void HandleButtonClicked()
-    {
-        TurnEnded?.Invoke();
-    }
+        public EndTurnPresenter(EndTurnModel model, EndTurnView view)
+        {
+            this.model = model;
+            this.view = view;
+        }
 
-    public void ActivateButton(bool isActive)
-    {
-        model.IsButtonActive = isActive;
-        view.ActivateButton(model.IsButtonActive);
+        public void Initialize()
+        {
+            view.ButtonClicked += HandleButtonClicked;
+            ActivateButton(true);
+        }
+
+        private void HandleButtonClicked()
+        {
+            TurnEnded?.Invoke();
+        }
+
+        public void ActivateButton(bool isActive)
+        {
+            model.IsButtonActive = isActive;
+            view.ActivateButton(model.IsButtonActive);
+        }
     }
 }

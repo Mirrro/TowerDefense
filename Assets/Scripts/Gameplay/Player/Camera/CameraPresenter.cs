@@ -1,75 +1,78 @@
 using UnityEngine;
 using Zenject;
 
-public class CameraPresenter : ITickable
+namespace Gameplay.Player.Camera
 {
-    private readonly CameraView view;
-    private readonly CameraModel model;
-
-    public CameraPresenter(CameraView view, CameraModel model)
+    public class CameraPresenter : ITickable
     {
-        this.view = view;
-        this.model = model;
-    }
+        private readonly CameraView view;
+        private readonly CameraModel model;
 
-    public void Tick()
-    {
-        HandleMovement();
-        HandleRotation();
-        HandleScroll();
-
-        view.LerpTo(model.Position, model.Rotation, model.Damping);
-        view.LerpCameraPosition(model.CameraPosition, model.Damping);
-    }
-
-    private void HandleMovement()
-    {
-        Vector3 direction = Vector3.zero;
-
-        if (Input.GetKey(KeyCode.A))
+        public CameraPresenter(CameraView view, CameraModel model)
         {
-            direction += -view.transform.right;
+            this.view = view;
+            this.model = model;
         }
 
-        if (Input.GetKey(KeyCode.D))
+        public void Tick()
         {
-            direction += view.transform.right;
+            HandleMovement();
+            HandleRotation();
+            HandleScroll();
+
+            view.LerpTo(model.Position, model.Rotation, model.Damping);
+            view.LerpCameraPosition(model.CameraPosition, model.Damping);
         }
 
-        if (Input.GetKey(KeyCode.W))
+        private void HandleMovement()
         {
-            direction += view.transform.forward;
+            Vector3 direction = Vector3.zero;
+
+            if (Input.GetKey(KeyCode.A))
+            {
+                direction += -view.transform.right;
+            }
+
+            if (Input.GetKey(KeyCode.D))
+            {
+                direction += view.transform.right;
+            }
+
+            if (Input.GetKey(KeyCode.W))
+            {
+                direction += view.transform.forward;
+            }
+
+            if (Input.GetKey(KeyCode.S))
+            {
+                direction += -view.transform.forward;
+            }
+
+            model.Position += direction * model.MoveSpeed * Time.deltaTime;
         }
 
-        if (Input.GetKey(KeyCode.S))
+        private void HandleRotation()
         {
-            direction += -view.transform.forward;
+            if (Input.GetKey(KeyCode.Q))
+            {
+                model.Rotation *= Quaternion.Euler(0, model.RotationSpeed * Time.deltaTime, 0);
+            }
+
+            if (Input.GetKey(KeyCode.E))
+            {
+                model.Rotation *= Quaternion.Euler(0, -model.RotationSpeed * Time.deltaTime, 0);
+            }
         }
 
-        model.Position += direction * model.MoveSpeed * Time.deltaTime;
-    }
-
-    private void HandleRotation()
-    {
-        if (Input.GetKey(KeyCode.Q))
+        private void HandleScroll()
         {
-            model.Rotation *= Quaternion.Euler(0, model.RotationSpeed * Time.deltaTime, 0);
-        }
-
-        if (Input.GetKey(KeyCode.E))
-        {
-            model.Rotation *= Quaternion.Euler(0, -model.RotationSpeed * Time.deltaTime, 0);
-        }
-    }
-
-    private void HandleScroll()
-    {
-        float scroll = Input.mouseScrollDelta.y * model.ScrollSpeed * Time.deltaTime;
-        Vector3 newCameraPosition = model.CameraPosition - new Vector3(0, scroll, -scroll * 0.5f);
+            float scroll = Input.mouseScrollDelta.y * model.ScrollSpeed * Time.deltaTime;
+            Vector3 newCameraPosition = model.CameraPosition - new Vector3(0, scroll, -scroll * 0.5f);
         
-        newCameraPosition.y = Mathf.Clamp(newCameraPosition.y, 2, 10);
-        newCameraPosition.z = Mathf.Clamp(newCameraPosition.z, -10, -1);
+            newCameraPosition.y = Mathf.Clamp(newCameraPosition.y, 2, 10);
+            newCameraPosition.z = Mathf.Clamp(newCameraPosition.z, -10, -1);
 
-        model.CameraPosition = newCameraPosition;
+            model.CameraPosition = newCameraPosition;
+        }
     }
 }

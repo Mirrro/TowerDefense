@@ -1,43 +1,47 @@
 ﻿using System;
+using Gameplay.Util;
 using UnityEngine;
 using Zenject;
 
-public class GridInteraction : ITickable
+namespace Gameplay.Grid
 {
-    private readonly GridManager gridManager;
-    private readonly MouseRayCast mouseRayCast;
+    public class GridInteraction : ITickable
+    {
+        private readonly GridManager gridManager;
+        private readonly MouseRayCast mouseRayCast;
 
-    public event Action<Vector2Int> OnGridCellSelected;
-    public event Action<Vector2Int> OnGridCellHovered;
+        public event Action<Vector2Int> OnGridCellSelected;
+        public event Action<Vector2Int> OnGridCellHovered;
 
-    private Vector2Int hoveredCell;
+        private Vector2Int hoveredCell;
     
-    public GridInteraction(GridManager gridManager, MouseRayCast mouseRayCast)
-    {
-        this.gridManager = gridManager;
-        this.mouseRayCast = mouseRayCast;
-    }
-
-    public void Tick()
-    {
-        if (mouseRayCast.TryGetPosition(out var hit))
+        public GridInteraction(GridManager gridManager, MouseRayCast mouseRayCast)
         {
-            var gridPos = gridManager.WorldToGridPosition(hit);
+            this.gridManager = gridManager;
+            this.mouseRayCast = mouseRayCast;
+        }
 
-            if (!gridManager.IsInBound(gridPos))
+        public void Tick()
+        {
+            if (mouseRayCast.TryGetPosition(out var hit))
             {
-                return;
-            }
+                var gridPos = gridManager.WorldToGridPosition(hit);
 
-            if (gridPos != hoveredCell)
-            {
-                hoveredCell = gridPos;
-                OnGridCellHovered?.Invoke(hoveredCell);
-            }
+                if (!gridManager.IsInBound(gridPos))
+                {
+                    return;
+                }
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                OnGridCellSelected?.Invoke(hoveredCell);
+                if (gridPos != hoveredCell)
+                {
+                    hoveredCell = gridPos;
+                    OnGridCellHovered?.Invoke(hoveredCell);
+                }
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    OnGridCellSelected?.Invoke(hoveredCell);
+                }
             }
         }
     }

@@ -1,4 +1,7 @@
-﻿public class PlayerHealthModel
+﻿namespace Gameplay.UserInterface.Modules.Health
 {
-    public int Health;
+    public class PlayerHealthModel
+    {
+        public int Health;
+    }
 }

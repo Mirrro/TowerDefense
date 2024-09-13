@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class WaterBlockModel
+namespace Gameplay.Blocks.Water
 {
-    public Vector3 Position;
-    public float LastTimeParticleActivated;
-    public float ParticleCooldown;
+    public class WaterBlockModel
+    {
+        public Vector3 Position;
+        public float LastTimeParticleActivated;
+        public float ParticleCooldown;
+    }
 }

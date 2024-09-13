@@ -3,36 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class GridNode
+namespace Gameplay.Grid
 {
-    public event Action ElementAdded;
-    public event Action ElementRemoved;
-    private List<IGridElement> gridElements = new List<IGridElement>();
-
-    public Vector2Int Index => index;
-    private readonly Vector2Int index;
-    public GridNode(Vector2Int index)
+    public class GridNode
     {
-        this.index = index;
-    }
-    
-    public bool IsSolid => gridElements.Any(x => x.IsSolid);
+        public event Action ElementAdded;
+        public event Action ElementRemoved;
+        private List<IGridElement> gridElements = new List<IGridElement>();
 
-    public void AddGirdElement(IGridElement gridElement)
-    {
-        gridElements.Add(gridElement);
-        gridElement.OnGridPosition(new Vector3(index.x, 0, index.y));
-        ElementAdded?.Invoke();
-    }
-
-    public void RemoveElement(IGridElement gridElement)
-    {
-        if (!gridElements.Contains(gridElement))
+        public Vector2Int Index => index;
+        private readonly Vector2Int index;
+        public GridNode(Vector2Int index)
         {
-            return;
+            this.index = index;
         }
+    
+        public bool IsSolid => gridElements.Any(x => x.IsSolid);
+
+        public void AddGirdElement(IGridElement gridElement)
+        {
+            gridElements.Add(gridElement);
+            gridElement.OnGridPosition(new Vector3(index.x, 0, index.y));
+            ElementAdded?.Invoke();
+        }
+
+        public void RemoveElement(IGridElement gridElement)
+        {
+            if (!gridElements.Contains(gridElement))
+            {
+                return;
+            }
         
-        gridElements.Remove(gridElement);
-        ElementRemoved?.Invoke();
+            gridElements.Remove(gridElement);
+            ElementRemoved?.Invoke();
+        }
     }
 }

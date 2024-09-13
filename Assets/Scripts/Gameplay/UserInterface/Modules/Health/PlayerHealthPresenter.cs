@@ -1,26 +1,30 @@
-﻿using Zenject;
+﻿using Gameplay.Player;
+using Zenject;
 
-public class PlayerHealthPresenter : IInitializable
+namespace Gameplay.UserInterface.Modules.Health
 {
-    private readonly PlayerHealth playerHealth;
-    private readonly PlayerHealthView view;
-    private readonly PlayerHealthModel model;
-
-    public PlayerHealthPresenter(PlayerHealthView view, PlayerHealthModel model, PlayerHealth playerHealth)
+    public class PlayerHealthPresenter : IInitializable
     {
-        this.view = view;
-        this.model = model;
-        this.playerHealth = playerHealth;
-    }
+        private readonly PlayerHealth playerHealth;
+        private readonly PlayerHealthView view;
+        private readonly PlayerHealthModel model;
 
-    public void Initialize()
-    {
-        playerHealth.HealthChanged += OnHealthChanged;
-    }
+        public PlayerHealthPresenter(PlayerHealthView view, PlayerHealthModel model, PlayerHealth playerHealth)
+        {
+            this.view = view;
+            this.model = model;
+            this.playerHealth = playerHealth;
+        }
 
-    private void OnHealthChanged(int health)
-    {
-        model.Health = health;
-        view.DisplayHealth(model.Health);
+        public void Initialize()
+        {
+            playerHealth.HealthChanged += OnHealthChanged;
+        }
+
+        private void OnHealthChanged(int health)
+        {
+            model.Health = health;
+            view.DisplayHealth(model.Health);
+        }
     }
 }

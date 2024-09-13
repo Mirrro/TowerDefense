@@ -1,15 +1,18 @@
 using UnityEngine;
 
-public class EnemyModel
+namespace Gameplay.Enemies
 {
-    public float Health;
-    public Vector3 position;
-    public Vector2Int gridTargetPosition;
-    public float MovementSpeed = 1;
+    public class EnemyModel
+    {
+        public float Health;
+        public Vector3 position;
+        public Vector2Int gridTargetPosition;
+        public float MovementSpeed = 1;
     
 
-    public EnemyModel(float health)
-    {
-        Health = health;
+        public EnemyModel(float health)
+        {
+            Health = health;
+        }
     }
 }

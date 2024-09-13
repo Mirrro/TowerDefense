@@ -1,4 +1,7 @@
-﻿public class EnemyPathModel
+﻿namespace Gameplay.Systems.EnemyPathMVP
 {
+    public class EnemyPathModel
+    {
     
+    }
 }

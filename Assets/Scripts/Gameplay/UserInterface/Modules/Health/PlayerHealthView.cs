@@ -1,12 +1,15 @@
 using TMPro;
 using UnityEngine;
 
-public class PlayerHealthView : MonoBehaviour
+namespace Gameplay.UserInterface.Modules.Health
 {
-    [SerializeField] private TMP_Text textfield;
-
-    public void DisplayHealth(int heath)
+    public class PlayerHealthView : MonoBehaviour
     {
-        textfield.text = heath.ToString();
+        [SerializeField] private TMP_Text textfield;
+
+        public void DisplayHealth(int heath)
+        {
+            textfield.text = heath.ToString();
+        }
     }
 }

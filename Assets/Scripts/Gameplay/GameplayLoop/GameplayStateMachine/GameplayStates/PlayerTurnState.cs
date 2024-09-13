@@ -1,51 +1,73 @@
 ﻿using System;
+using Gameplay.GameplayCards;
+using Gameplay.Systems.EnemyPathMVP;
+using Gameplay.UserInterface;
 
-public class PlayerTurnState : IGameplayState
+namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
 {
-    private readonly TowerBuildSystem towerBuildSystem;
-    private readonly UIManager uiManager;
-    private readonly BuildMenuItemsContainer container;
-    private readonly EnemyPathPresenter enemyPathPresenter;
-
-    public PlayerTurnState(TowerBuildSystem towerBuildSystem, UIManager uiManager, BuildMenuItemsContainer container, EnemyPathPresenter enemyPathPresenter)
+    public class PlayerTurnState : IGameplayState
     {
-        this.towerBuildSystem = towerBuildSystem;
-        this.uiManager = uiManager;
-        this.container = container;
-        this.enemyPathPresenter = enemyPathPresenter;
-    }
+        private readonly UIManager uiManager;
+        private readonly EnemyPathPresenter enemyPathPresenter;
+        private readonly GameplayCardDeck gameplayCardDeck;
+        
 
-    public event Action StateComplete;
-    public GameplayStateStatus GameplayStateStatus { get; set; }
+        public PlayerTurnState(UIManager uiManager, 
+            EnemyPathPresenter enemyPathPresenter,
+            GameplayCardDeck gameplayCardDeck)
+        {
+            this.uiManager = uiManager;
+            this.enemyPathPresenter = enemyPathPresenter;
+            this.gameplayCardDeck = gameplayCardDeck;
+        }
 
-    public void Activate()
-    {
-        enemyPathPresenter.Activate();
-        uiManager.EndTurnPresenter.ActivateButton(true);
-        uiManager.EndTurnPresenter.TurnEnded += HandleTurnEnd;
-    }
+        public event Action StateComplete;
+        public GameplayStateStatus GameplayStateStatus { get; set; }
 
-    private void HandleTurnEnd()
-    {
-        StateComplete?.Invoke();
-    }
+        public void Activate()
+        {
+            enemyPathPresenter.Activate();
+            uiManager.EndTurnPresenter.ActivateButton(true);
+            uiManager.EndTurnPresenter.TurnEnded += HandleTurnEnd;
+            uiManager.PlayerHandPresenter.Activate();
 
-    public void OnPause()
-    {
-    }
+            for (int i = 0; i < 3; i++)
+            {
+                GivePlayerCards();
+            }
+        }
 
-    public void OnUnpause()
-    {
-    }
+        private void HandleTurnEnd()
+        {
+            StateComplete?.Invoke();
+        }
+        
+        private void GivePlayerCards()
+        {
+            if (gameplayCardDeck.TryDrawRandom(out var card))
+            {
+                uiManager.PlayerHandPresenter.AddCard(card);
+            }
+        }
 
-    public void Update()
-    {
-    }
+        public void OnPause()
+        {
+        }
 
-    public void Deactivate()
-    {
-        enemyPathPresenter.Deactivate();
-        uiManager.EndTurnPresenter.ActivateButton(false);
-        uiManager.EndTurnPresenter.TurnEnded -= HandleTurnEnd;
+        public void OnUnpause()
+        {
+        }
+
+        public void Update()
+        {
+        }
+
+        public void Deactivate()
+        {
+            enemyPathPresenter.Deactivate();
+            uiManager.EndTurnPresenter.ActivateButton(false);
+            uiManager.EndTurnPresenter.TurnEnded -= HandleTurnEnd;
+            uiManager.PlayerHandPresenter.Deactivate();
+        }
     }
 }

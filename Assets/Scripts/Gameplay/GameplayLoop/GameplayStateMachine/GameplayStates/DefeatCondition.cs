@@ -1,22 +1,26 @@
 ﻿using System;
+using Gameplay.Player;
 using Zenject;
 
-public class DefeatCondition : IInitializable
+namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
 {
-    [Inject] private PlayerHealth playerHealth;
-
-    public event Action Defeat;
-
-    public void Initialize()
+    public class DefeatCondition : IInitializable
     {
-        playerHealth.HealthChanged += HandleHealthChanged;
-    }
+        [Inject] private PlayerHealth playerHealth;
 
-    private void HandleHealthChanged(int health)
-    {
-        if (health <= 0)
+        public event Action Defeat;
+
+        public void Initialize()
         {
-            Defeat?.Invoke();
+            playerHealth.HealthChanged += HandleHealthChanged;
+        }
+
+        private void HandleHealthChanged(int health)
+        {
+            if (health <= 0)
+            {
+                Defeat?.Invoke();
+            }
         }
     }
 }

@@ -1,21 +1,24 @@
 using UnityEngine;
 
-public class Detector<T> where T : Component
+namespace Gameplay.Util
 {
-    public int OverlapSphere(Vector3 position, float radius, T[] result)
+    public class Detector<T> where T : Component
     {
-        Collider[] colliders = new Collider[result.Length];
-        var size = Physics.OverlapSphereNonAlloc(position, radius, colliders, LayerMask.GetMask($"Enemy"));
-        
-        for (int i = 0; i < size; i++)
+        public int OverlapSphere(Vector3 position, float radius, T[] result)
         {
-            T component = colliders[i].GetComponent<T>();
-            if (component)
+            Collider[] colliders = new Collider[result.Length];
+            var size = Physics.OverlapSphereNonAlloc(position, radius, colliders, LayerMask.GetMask($"Enemy"));
+        
+            for (int i = 0; i < size; i++)
             {
-                result[i] = component;
+                T component = colliders[i].GetComponent<T>();
+                if (component)
+                {
+                    result[i] = component;
+                }
             }
-        }
 
-        return size;
+            return size;
+        }
     }
 }

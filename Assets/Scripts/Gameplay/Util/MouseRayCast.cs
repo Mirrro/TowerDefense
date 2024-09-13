@@ -1,23 +1,26 @@
 ﻿using UnityEngine;
 
-public class MouseRayCast
+namespace Gameplay.Util
 {
-    private Plane plane = new Plane(Vector3.up, Vector3.zero);
-    
-    public bool TryGetPosition(out Vector3 point)
+    public class MouseRayCast
     {
-        //Create a ray from the Mouse click position
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        //Initialise the enter variable
-        float enter = 0.0f;
-        point = Vector3.zero;
-        
-        if (plane.Raycast(ray, out enter))
+        private Plane plane = new Plane(Vector3.up, Vector3.zero);
+    
+        public bool TryGetPosition(out Vector3 point)
         {
-            point = ray.GetPoint(enter);
-            return true;
+            //Create a ray from the Mouse click position
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            //Initialise the enter variable
+            float enter = 0.0f;
+            point = Vector3.zero;
+        
+            if (plane.Raycast(ray, out enter))
+            {
+                point = ray.GetPoint(enter);
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 }

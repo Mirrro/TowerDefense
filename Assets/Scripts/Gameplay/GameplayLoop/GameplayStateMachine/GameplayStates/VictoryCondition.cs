@@ -1,30 +1,34 @@
 ﻿using System;
+using Gameplay.Enemies;
 using Zenject;
 
-public class VictoryCondition : IInitializable, ITickable
+namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
 {
-    [Inject] private EnemyManager enemyManager;
+    public class VictoryCondition : IInitializable, ITickable
+    {
+        [Inject] private EnemyManager enemyManager;
 
-    public event Action Victory;
-    private bool isFinalWave;
+        public event Action Victory;
+        private bool isFinalWave;
     
-    public void Initialize()
-    {
-        enemyManager.FinalWaveSend += HandleFinalWaveSend;
-    }
-
-    private void HandleFinalWaveSend()
-    {
-        isFinalWave = true;
-    }
-
-    public void Tick()
-    {
-        if (isFinalWave)
+        public void Initialize()
         {
-            if (enemyManager.ActiveEnemiesCount <= 0)
+            enemyManager.FinalWaveSend += HandleFinalWaveSend;
+        }
+
+        private void HandleFinalWaveSend()
+        {
+            isFinalWave = true;
+        }
+
+        public void Tick()
+        {
+            if (isFinalWave)
             {
-                Victory?.Invoke();
+                if (enemyManager.ActiveEnemiesCount <= 0)
+                {
+                    Victory?.Invoke();
+                }
             }
         }
     }

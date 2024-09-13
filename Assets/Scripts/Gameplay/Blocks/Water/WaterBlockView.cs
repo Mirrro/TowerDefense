@@ -1,15 +1,18 @@
 using UnityEngine;
 
-public class WaterBlockView : MonoBehaviour
+namespace Gameplay.Blocks.Water
 {
-    [SerializeField] private ParticleSystem particleSystem;
-    public void SetPosition(Vector3 position)
+    public class WaterBlockView : MonoBehaviour
     {
-        transform.position = position;
-    }
+        [SerializeField] private ParticleSystem particleSystem;
+        public void SetPosition(Vector3 position)
+        {
+            transform.position = position;
+        }
 
-    public void FireLava()
-    {
-        particleSystem.Play();   
+        public void FireLava()
+        {
+            particleSystem.Play();   
+        }
     }
 }

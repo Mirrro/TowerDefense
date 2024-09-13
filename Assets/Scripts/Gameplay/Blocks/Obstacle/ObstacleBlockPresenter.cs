@@ -1,24 +1,28 @@
-﻿using UnityEngine;
+﻿using Gameplay.Grid;
+using UnityEngine;
 
-public class ObstacleBlockPresenter : IGridElement
+namespace Gameplay.Blocks.Obstacle
 {
-    private readonly ObstacleBlockView view;
-    private readonly ObstacleBlockModel model;
-    public bool IsSolid => true;
-    public void OnGridPosition(Vector3 position)
+    public class ObstacleBlockPresenter : IGridElement
     {
-        model.Position = position;
-        view.SetPosition(model.Position);
-    }
+        private readonly ObstacleBlockView view;
+        private readonly ObstacleBlockModel model;
+        public bool IsSolid => true;
+        public void OnGridPosition(Vector3 position)
+        {
+            model.Position = position;
+            view.SetPosition(model.Position);
+        }
 
-    public ObstacleBlockPresenter(ObstacleBlockView view, ObstacleBlockModel model)
-    {
-        this.view = view;
-        this.model = model;
-    }
+        public ObstacleBlockPresenter(ObstacleBlockView view, ObstacleBlockModel model)
+        {
+            this.view = view;
+            this.model = model;
+        }
 
-    public void Initialize()
-    {
-        view.SetPosition(model.Position);
+        public void Initialize()
+        {
+            view.SetPosition(model.Position);
+        }
     }
 }

@@ -2,29 +2,32 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EndTurnView : MonoBehaviour
+namespace Gameplay.UserInterface.Modules.EndTurnUI
 {
-    [SerializeField] private Button endTurnButton;
+    public class EndTurnView : MonoBehaviour
+    {
+        [SerializeField] private Button endTurnButton;
     
-    public event Action ButtonClicked;
+        public event Action ButtonClicked;
 
-    public void ActivateButton(bool isActive)
-    {
-        endTurnButton.interactable = isActive;
-    }
+        public void ActivateButton(bool isActive)
+        {
+            endTurnButton.interactable = isActive;
+        }
 
-    private void OnEnable()
-    {
-        endTurnButton.onClick.AddListener(HandleButtonClicked);
-    }
+        private void OnEnable()
+        {
+            endTurnButton.onClick.AddListener(HandleButtonClicked);
+        }
 
-    private void OnDisable()
-    {
-        endTurnButton.onClick.RemoveListener(HandleButtonClicked);
-    }
+        private void OnDisable()
+        {
+            endTurnButton.onClick.RemoveListener(HandleButtonClicked);
+        }
 
-    private void HandleButtonClicked()
-    {
-        ButtonClicked?.Invoke();
+        private void HandleButtonClicked()
+        {
+            ButtonClicked?.Invoke();
+        }
     }
 }

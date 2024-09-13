@@ -1,17 +1,21 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gameplay.Systems;
 using Zenject;
 
-public class BuildTowerBTask : IGameplayTask
+namespace Gameplay.GameplayTasks
 {
-    [Inject] private TowerBuildSystem towerBuildSystem;
+    public class BuildTowerBTask : IGameplayTask
+    {
+        [Inject] private TowerBuildSystem towerBuildSystem;
     
-    public async UniTask Execute(CancellationToken cancellationToken)
-    {
-        await towerBuildSystem.BuildTower(Towers.TowerB, cancellationToken);
-    }
+        public async UniTask Execute(CancellationToken cancellationToken)
+        {
+            await towerBuildSystem.BuildTower(Systems.Towers.TowerB, cancellationToken);
+        }
 
-    public class Factory : PlaceholderFactory<BuildTowerBTask>
-    {
+        public class Factory : PlaceholderFactory<BuildTowerBTask>
+        {
+        }
     }
 }

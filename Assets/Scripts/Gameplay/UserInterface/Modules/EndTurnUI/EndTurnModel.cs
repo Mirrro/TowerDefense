@@ -1,4 +1,7 @@
-﻿public class EndTurnModel
+﻿namespace Gameplay.UserInterface.Modules.EndTurnUI
 {
-    public bool IsButtonActive;
+    public class EndTurnModel
+    {
+        public bool IsButtonActive;
+    }
 }

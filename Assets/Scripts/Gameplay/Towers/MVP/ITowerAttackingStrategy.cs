@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Gameplay.Towers.MVP;
+using Gameplay.Enemies;
 
-namespace Gameplay.Towers.Strategies
+namespace Gameplay.Towers.MVP
 {
     public interface ITowerAttackingStrategy
     {

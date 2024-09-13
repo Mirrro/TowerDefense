@@ -1,19 +1,23 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gameplay.Player;
 using Zenject;
 
-public class HelloWorldGameplayTask : IGameplayTask
+namespace Gameplay.GameplayTasks
 {
-    [Inject] private PlayerHealth playerHealth;
-    
-    public UniTask Execute(CancellationToken cancellationToken)
+    public class HelloWorldGameplayTask : IGameplayTask
     {
-        playerHealth.AddHealth(1);
-        return UniTask.CompletedTask;
-    }
+        [Inject] private PlayerHealth playerHealth;
     
-    public class Factory : PlaceholderFactory<HelloWorldGameplayTask>
-    {
+        public UniTask Execute(CancellationToken cancellationToken)
+        {
+            playerHealth.AddHealth(1);
+            return UniTask.CompletedTask;
+        }
+    
+        public class Factory : PlaceholderFactory<HelloWorldGameplayTask>
+        {
         
+        }
     }
 }

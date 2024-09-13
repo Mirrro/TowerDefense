@@ -1,32 +1,37 @@
 ﻿using System;
+using Gameplay.GameplayLoop.GameplayStateMachine;
+using Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates;
 using UnityEngine;
 
-public class VictoryState : IGameplayState
+namespace Gameplay.GameplayLoop
 {
-    public event Action StateComplete;
-    public GameplayStateStatus GameplayStateStatus { get; set; }
-    public void Activate()
+    public class VictoryState : IGameplayState
     {
-        Debug.Log("Good. You won :) ");
-    }
+        public event Action StateComplete;
+        public GameplayStateStatus GameplayStateStatus { get; set; }
+        public void Activate()
+        {
+            Debug.Log("Good. You won :) ");
+        }
 
-    public void OnPause()
-    {
+        public void OnPause()
+        {
         
-    }
+        }
 
-    public void OnUnpause()
-    {
+        public void OnUnpause()
+        {
        
-    }
+        }
 
-    public void Update()
-    {
+        public void Update()
+        {
   
-    }
+        }
 
-    public void Deactivate()
-    {
+        public void Deactivate()
+        {
 
+        }
     }
 }

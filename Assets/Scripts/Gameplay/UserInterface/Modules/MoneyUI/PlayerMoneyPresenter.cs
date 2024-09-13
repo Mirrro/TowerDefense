@@ -1,36 +1,41 @@
 ﻿
-public class PlayerMoneyPresenter
+using Gameplay.Player;
+
+namespace Gameplay.UserInterface.Modules.MoneyUI
 {
-    private readonly PlayerMoneyView view;
-    private readonly PlayerMoneyModel model;
-    private readonly PlayerBank playerBank;
-
-    public PlayerMoneyPresenter(PlayerMoneyView view, PlayerMoneyModel model, PlayerBank playerBank)
+    public class PlayerMoneyPresenter
     {
-        this.view = view;
-        this.model = model;
-        this.playerBank = playerBank;
-    }
+        private readonly PlayerMoneyView view;
+        private readonly PlayerMoneyModel model;
+        private readonly PlayerBank playerBank;
 
-    public void Initialize()
-    {
-        playerBank.CoinsChanged += HandleCoinsChanged;
-        HandleCoinsChanged(playerBank.Coins);
-    }
-
-    private void HandleCoinsChanged(int money)
-    {
-        var previousMoneyCount = model.MoneyCount;
-        model.MoneyCount = money;
-        view.UpdateMoneyTextfield(model.MoneyCount.ToString());
-        
-        if (previousMoneyCount > money)
+        public PlayerMoneyPresenter(PlayerMoneyView view, PlayerMoneyModel model, PlayerBank playerBank)
         {
-            view.FlashRed();
+            this.view = view;
+            this.model = model;
+            this.playerBank = playerBank;
         }
-        else
+
+        public void Initialize()
         {
-            view.FlashWhite();
+            playerBank.CoinsChanged += HandleCoinsChanged;
+            HandleCoinsChanged(playerBank.Coins);
+        }
+
+        private void HandleCoinsChanged(int money)
+        {
+            var previousMoneyCount = model.MoneyCount;
+            model.MoneyCount = money;
+            view.UpdateMoneyTextfield(model.MoneyCount.ToString());
+        
+            if (previousMoneyCount > money)
+            {
+                view.FlashRed();
+            }
+            else
+            {
+                view.FlashWhite();
+            }
         }
     }
 }

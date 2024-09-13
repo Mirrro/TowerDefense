@@ -1,26 +1,32 @@
-﻿public class EnemyReachGoalSystem
+﻿using Gameplay.Enemies;
+using Gameplay.Player;
+
+namespace Gameplay.Systems
 {
-    private readonly PlayerHealth playerHealth;
-    private readonly EnemyManager enemyManager;
-
-    public EnemyReachGoalSystem(PlayerHealth playerHealth, EnemyManager enemyManager)
+    public class EnemyReachGoalSystem
     {
-        this.playerHealth = playerHealth;
-        this.enemyManager = enemyManager;
-    }
+        private readonly PlayerHealth playerHealth;
+        private readonly EnemyManager enemyManager;
 
-    public void Activate()
-    {
-        enemyManager.EnemyReachedGoal += HandleEnemyDeath;
-    }
+        public EnemyReachGoalSystem(PlayerHealth playerHealth, EnemyManager enemyManager)
+        {
+            this.playerHealth = playerHealth;
+            this.enemyManager = enemyManager;
+        }
 
-    public void Deactivate()
-    {
-        enemyManager.EnemyReachedGoal -= HandleEnemyDeath;
-    }
+        public void Activate()
+        {
+            enemyManager.EnemyReachedGoal += HandleEnemyDeath;
+        }
 
-    private void HandleEnemyDeath(IEnemyPresenter enemyPresenter)
-    {
-        playerHealth.RemoveHealth(1);
+        public void Deactivate()
+        {
+            enemyManager.EnemyReachedGoal -= HandleEnemyDeath;
+        }
+
+        private void HandleEnemyDeath(IEnemyPresenter enemyPresenter)
+        {
+            playerHealth.RemoveHealth(1);
+        }
     }
 }

@@ -1,27 +1,40 @@
 ﻿using System;
 
-public class PlayerBank
+namespace Gameplay.Player
 {
-    public event Action<int> CoinsChanged;
-    public int Coins
+    public class PlayerBank
     {
-        get => coins;
-        private set
+        public event Action<int> CoinsChanged;
+        public int Coins
         {
-            coins = value;
-            CoinsChanged?.Invoke(coins);
+            get => coins;
+            private set
+            {
+                coins = value;
+                CoinsChanged?.Invoke(coins);
+            }
         }
-    }
 
-    private int coins = 0;
+        private int coins = 0;
 
-    public void AddMoney(int amount)
-    {
-        Coins += amount;
-    }
+        public void AddMoney(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+        
+            Coins += amount;
+        }
 
-    public void RemoveMoney(int amount)
-    {
-        Coins -= amount;
+        public void RemoveMoney(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+        
+            Coins -= amount;
+        }
     }
 }

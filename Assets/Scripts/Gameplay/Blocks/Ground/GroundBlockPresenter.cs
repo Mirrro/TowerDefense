@@ -1,25 +1,29 @@
-﻿using UnityEngine;
+﻿using Gameplay.Grid;
+using UnityEngine;
 
-public class GroundBlockPresenter : IGridElement
+namespace Gameplay.Blocks.Ground
 {
-    private readonly GroundBlockView view;
-    private readonly GroundBlockModel model;
-
-    public GroundBlockPresenter(GroundBlockView view, GroundBlockModel model)
+    public class GroundBlockPresenter : IGridElement
     {
-        this.view = view;
-        this.model = model;
-    }
+        private readonly GroundBlockView view;
+        private readonly GroundBlockModel model;
 
-    public void Initialize()
-    {
-        view.SetPosition(model.Position);
-    }
+        public GroundBlockPresenter(GroundBlockView view, GroundBlockModel model)
+        {
+            this.view = view;
+            this.model = model;
+        }
 
-    public bool IsSolid => false;
-    public void OnGridPosition(Vector3 position)
-    {
-        model.Position = position;
-        view.SetPosition(model.Position);
+        public void Initialize()
+        {
+            view.SetPosition(model.Position);
+        }
+
+        public bool IsSolid => false;
+        public void OnGridPosition(Vector3 position)
+        {
+            model.Position = position;
+            view.SetPosition(model.Position);
+        }
     }
 }

@@ -1,5 +1,8 @@
-﻿public enum GameplayStateStatus
+﻿namespace Gameplay.GameplayLoop.GameplayStateMachine
 {
-    Running,
-    Paused
+    public enum GameplayStateStatus
+    {
+        Running,
+        Paused
+    }
 }

@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
-public class ObstacleBlockView : MonoBehaviour
+namespace Gameplay.Blocks.Obstacle
 {
-    public void SetPosition(Vector3 position)
+    public class ObstacleBlockView : MonoBehaviour
     {
-        transform.position = position;
+        public void SetPosition(Vector3 position)
+        {
+            transform.position = position;
+        }
     }
 }

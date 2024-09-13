@@ -2,29 +2,32 @@
 using System.Collections.Concurrent;
 using Cysharp.Threading.Tasks;
 
-public class TaskQueue
+namespace Gameplay.Systems
 {
-    private ConcurrentQueue<(Func<UniTask>, Action)> taskQueue = new ();
-    private bool isProcessing = false;
-
-    public void EnqueueTask(Func<UniTask> task, Action callback = null)
+    public class TaskQueue
     {
-        taskQueue.Enqueue((task, callback));
-        if (!isProcessing)
-        {
-            ProcessNextTask().Forget();
-        }
-    }
+        private ConcurrentQueue<(Func<UniTask>, Action)> taskQueue = new ();
+        private bool isProcessing = false;
 
-    private async UniTaskVoid ProcessNextTask()
-    {
-        isProcessing = true;
-        while (taskQueue.TryDequeue(out var taskWithCallback))
+        public void EnqueueTask(Func<UniTask> task, Action callback = null)
         {
-            var (task, callback) = taskWithCallback;
-            await task();
-            callback?.Invoke();
+            taskQueue.Enqueue((task, callback));
+            if (!isProcessing)
+            {
+                ProcessNextTask().Forget();
+            }
         }
-        isProcessing = false;
+
+        private async UniTaskVoid ProcessNextTask()
+        {
+            isProcessing = true;
+            while (taskQueue.TryDequeue(out var taskWithCallback))
+            {
+                var (task, callback) = taskWithCallback;
+                await task();
+                callback?.Invoke();
+            }
+            isProcessing = false;
+        }
     }
 }

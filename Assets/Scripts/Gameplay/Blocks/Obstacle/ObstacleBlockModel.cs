@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public class ObstacleBlockModel
+namespace Gameplay.Blocks.Obstacle
 {
-    public Vector3 Position;
+    public class ObstacleBlockModel
+    {
+        public Vector3 Position;
+    }
 }

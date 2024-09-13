@@ -1,19 +1,22 @@
-public class Node
+namespace Gameplay.PathFinding
 {
-    public int X { get; } 
-    public int Y { get; }
-    public bool IsWalkable { get; set; }
-    
-    public Node Parent { get; set; }
-    public float GCost { get; set; }
-    public float HCost { get; set; }
-
-    public float FCost => GCost + HCost;
-
-    public Node(int x, int y, bool isWalkable)
+    public class Node
     {
-        X = x;
-        Y = y;
-        IsWalkable = isWalkable;
+        public int X { get; } 
+        public int Y { get; }
+        public bool IsWalkable { get; set; }
+    
+        public Node Parent { get; set; }
+        public float GCost { get; set; }
+        public float HCost { get; set; }
+
+        public float FCost => GCost + HCost;
+
+        public Node(int x, int y, bool isWalkable)
+        {
+            X = x;
+            Y = y;
+            IsWalkable = isWalkable;
+        }
     }
 }

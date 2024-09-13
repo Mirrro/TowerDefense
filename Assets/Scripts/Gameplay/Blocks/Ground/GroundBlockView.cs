@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
-public class GroundBlockView : MonoBehaviour
+namespace Gameplay.Blocks.Ground
 {
-    public void SetPosition(Vector3 position)
+    public class GroundBlockView : MonoBehaviour
     {
-        transform.position = position;
+        public void SetPosition(Vector3 position)
+        {
+            transform.position = position;
+        }
     }
 }

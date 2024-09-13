@@ -1,27 +1,30 @@
 ﻿using System;
 
-public class PlayerHealth
+namespace Gameplay.Player
 {
-    public event Action<int> HealthChanged;
-    public int Health
+    public class PlayerHealth
     {
-        get => health;
-        private set
+        public event Action<int> HealthChanged;
+        public int Health
         {
-            health = value;
-            HealthChanged?.Invoke(health);
+            get => health;
+            private set
+            {
+                health = value;
+                HealthChanged?.Invoke(health);
+            }
         }
-    }
 
-    private int health = 0;
+        private int health = 0;
 
-    public void AddHealth(int amount)
-    {
-        Health += amount;
-    }
+        public void AddHealth(int amount)
+        {
+            Health += amount;
+        }
 
-    public void RemoveHealth(int amount)
-    {
-        Health -= amount;
+        public void RemoveHealth(int amount)
+        {
+            Health -= amount;
+        }
     }
 }
