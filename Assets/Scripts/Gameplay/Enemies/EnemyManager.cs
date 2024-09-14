@@ -182,7 +182,7 @@ namespace Gameplay.Enemies
 
         private bool IsInRadius(Vector2Int origin, int radius, Vector2Int target)
         {
-            int distance = Math.Abs(target.x - origin.x) + Math.Abs(target.y - origin.y);
+            int distance = Math.Max(Math.Abs(target.x - origin.x), Math.Abs(target.y - origin.y));
             return distance <= radius;
         }
     }

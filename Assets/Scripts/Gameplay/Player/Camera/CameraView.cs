@@ -9,8 +9,7 @@ namespace Gameplay.Player.Camera
     {
         [SerializeField] private UnityEngine.Camera camera;
         public UnityEvent<Vector3> ChangedPosition = new ();
-        public UnityEngine.Camera Camera => camera;
-    
+
         private Sequence parentTween;
         private Tween cameraTween;
     

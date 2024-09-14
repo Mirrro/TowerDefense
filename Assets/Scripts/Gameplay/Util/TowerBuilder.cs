@@ -40,7 +40,7 @@ namespace Gameplay.Util
             TowerPresenter towerPresenter = towerFactory.Create(
                 CreateBasicTowerStateMachine(),
                 Object.Instantiate(container.TowerView, Vector3.zero, Quaternion.identity), 
-                new TowerModel(Vector3.zero, 2, 10, .5f));
+                new TowerModel(Vector3.zero, 1, 10, .5f));
             towerPresenter.Initialize();
             towerPresenters.Add(towerPresenter);
             return towerPresenter;
@@ -53,7 +53,7 @@ namespace Gameplay.Util
             TowerPresenter towerPresenter = towerFactory.Create(
                 CreateSpecialTowerStateMachine(),
                 Object.Instantiate(container.TowerAView, Vector3.zero, Quaternion.identity), 
-                new TowerModel(Vector3.zero, 4, 150, 2f));
+                new TowerModel(Vector3.zero, 4, 500, 3f));
             towerPresenter.Initialize();
             towerPresenters.Add(towerPresenter);
             return towerPresenter;

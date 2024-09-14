@@ -55,9 +55,13 @@ namespace Gameplay.Systems
                     completionSource.TrySetCanceled();
                     return;
                 }
+                
                 GridNode selectedGridNode = gridManager.Grid.GridNodes[position.x, position.y];
-                selectedGridNode.AddGirdElement(gridElement);
-                completionSource.TrySetResult();
+                if (!selectedGridNode.IsSolid && EnsurePath(position))
+                {
+                    selectedGridNode.AddGirdElement(gridElement);
+                    completionSource.TrySetResult();
+                }
             }
 
             gridInteraction.OnGridCellSelected += HandleGridSelected;

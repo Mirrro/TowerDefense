@@ -11,6 +11,8 @@ namespace Gameplay.Systems
         [Inject] private PlayerBank playerBank;
         [Inject] private UIManager uiManager;
 
+        private TaskQueue taskQueue = new();
+
         public void Initialize()
         {
             uiManager.PlayerHandPresenter.CardPlayed.AddListener(x => OnCardPlayed(x).Forget());
@@ -20,8 +22,7 @@ namespace Gameplay.Systems
         {
             if (card.Data.CardCost <= playerBank.Coins)
             {
-                await card.Execute();
-                playerBank.RemoveMoney(card.Data.CardCost);
+                taskQueue.EnqueueTask(card.Execute, () => playerBank.RemoveMoney(card.Data.CardCost));
             }
         }
     }
