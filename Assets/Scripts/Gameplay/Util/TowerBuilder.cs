@@ -12,6 +12,7 @@ namespace Gameplay.Util
         private const string path = "ViewContainer";
         private TowerPresenter.Factory towerFactory;
         private readonly SingleTargetAttackingStrategy.Factory singleTargetAttackStrategyFactory;
+        private readonly MultipleTargetAttackingStrategy.Factory multipleTargetAttackStrategyFactory;
         private readonly TowerDetectingStrategy.Factory towerDetectingStrategyFactory;
         private readonly SimpleSortingStrategy.Factory simpleSortingStrategyFactory;
         private readonly TowerCooldownStrategy.Factory cooldownStrategyFactory;
@@ -19,12 +20,14 @@ namespace Gameplay.Util
 
         public TowerBuilder(TowerPresenter.Factory towerFactory, 
             SingleTargetAttackingStrategy.Factory singleTargetAttackStrategyFactory,
+            MultipleTargetAttackingStrategy.Factory multipleTargetAttackStrategyFactory,
             TowerDetectingStrategy.Factory towerDetectingStrategyFactory,
             SimpleSortingStrategy.Factory simpleSortingStrategyFactory,
             TowerCooldownStrategy.Factory cooldownStrategyFactory)
         {
             this.towerFactory = towerFactory;
             this.singleTargetAttackStrategyFactory = singleTargetAttackStrategyFactory;
+            this.multipleTargetAttackStrategyFactory = multipleTargetAttackStrategyFactory;
             this.towerDetectingStrategyFactory = towerDetectingStrategyFactory;
             this.simpleSortingStrategyFactory = simpleSortingStrategyFactory;
             this.cooldownStrategyFactory = cooldownStrategyFactory;
@@ -48,15 +51,27 @@ namespace Gameplay.Util
             var container = Resources.Load<ViewContainer>(path);
         
             TowerPresenter towerPresenter = towerFactory.Create(
-                CreateBasicTowerStateMachine(),
+                CreateSpecialTowerStateMachine(),
                 Object.Instantiate(container.TowerAView, Vector3.zero, Quaternion.identity), 
                 new TowerModel(Vector3.zero, 4, 150, 2f));
             towerPresenter.Initialize();
             towerPresenters.Add(towerPresenter);
             return towerPresenter;
         }
-
+        
         private TowerStateMachine CreateBasicTowerStateMachine()
+        {
+            TowerStateMachine towerStateMachine = new TowerStateMachine(
+                new TowerStateAttack(
+                    multipleTargetAttackStrategyFactory.Create(),
+                    simpleSortingStrategyFactory.Create(),
+                    cooldownStrategyFactory.Create(),
+                    towerDetectingStrategyFactory.Create()));
+            
+            return towerStateMachine;
+        }
+
+        private TowerStateMachine CreateSpecialTowerStateMachine()
         {
             TowerStateMachine towerStateMachine = new TowerStateMachine(
                 new TowerStateAttack(

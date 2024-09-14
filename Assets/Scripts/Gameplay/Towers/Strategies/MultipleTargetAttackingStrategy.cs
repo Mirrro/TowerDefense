@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Gameplay.Enemies;
 using Gameplay.Towers.MVP;
 using Zenject;
 
 namespace Gameplay.Towers.Strategies
 {
-    public class SingleTargetAttackingStrategy : ITowerAttackingStrategy
+    public class MultipleTargetAttackingStrategy : ITowerAttackingStrategy
     {
         private TowerPresenter towerPresenter;
-
+        
         public void Initialize(TowerPresenter towerPresenter)
         {
             this.towerPresenter = towerPresenter;
@@ -17,19 +16,18 @@ namespace Gameplay.Towers.Strategies
 
         public void Attack(List<IEnemyPresenter> enemyPresenters)
         {
-            IEnemyPresenter target = enemyPresenters.First();
-            if (target != null)
+            foreach (var enemyPresenter in enemyPresenters)
             {
-                towerPresenter.FireAtTarget(target.GetTransform(), () => ApplyDamage(target));
+                towerPresenter.FireAtTarget(enemyPresenter.GetTransform(), () => ApplyDamage(enemyPresenter));
             }
         }
-
+        
         private void ApplyDamage(IEnemyPresenter enemyPresenter)
         {
             enemyPresenter.ReceiveDamage(towerPresenter.TowerDamage);
         }
         
-        public class Factory : PlaceholderFactory<SingleTargetAttackingStrategy>
+        public class Factory : PlaceholderFactory<MultipleTargetAttackingStrategy>
         {
             
         }

@@ -30,11 +30,17 @@ namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
 
         private void PopulateDeck()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
+            {
+                gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateShockclaw());
+            }
+            for (int i = 0; i < 5; i++)
             {
                 gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateCinderstrike());
+            }
+            for (int i = 0; i < 5; i++)
+            {
                 gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateVitalWaters());
-                gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateShockclaw());
             }
         }
 

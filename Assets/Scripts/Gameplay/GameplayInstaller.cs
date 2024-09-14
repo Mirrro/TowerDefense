@@ -37,26 +37,31 @@ namespace Gameplay
             Container.BindInterfacesAndSelfTo<GameplayCardBuilder>().AsSingle();
             Container.BindInterfacesAndSelfTo<UIManager>().AsSingle().WithArguments(uiViewReferences);
             Container.BindInterfacesAndSelfTo<EnemyPathPresenter>().AsSingle().WithArguments(enemyPathView, new EnemyPathModel());
-            Container.BindInterfacesAndSelfTo<GameplayCardExecutionSystem>().AsSingle();
-        
+
+            // Enemies
             Container.BindInterfacesAndSelfTo<EnemyManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<EnemyBuilder>().AsSingle();
+            
+            // Mechanics
             Container.BindInterfacesAndSelfTo<EnemyDeathRewardSystem>().AsSingle();   
             Container.BindInterfacesAndSelfTo<EnemyReachGoalSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<DefeatCondition>().AsSingle();
             Container.BindInterfacesAndSelfTo<VictoryCondition>().AsSingle();
-
+            Container.BindInterfacesAndSelfTo<GameplayCardExecutionSystem>().AsSingle();
+            
+            // Towers
             Container.BindInterfacesAndSelfTo<TowerBuildSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<GridPlacementSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<GridInteraction>().AsSingle();
             Container.BindInterfacesAndSelfTo<MouseRayCast>().AsSingle();
             Container.BindInterfacesAndSelfTo<TowerBuilder>().AsSingle();
-            Container.BindInterfacesAndSelfTo<EnemyBuilder>().AsSingle();
-        
+
             // Factories
             Container.BindFactory<TowerStateMachine, TowerView, TowerModel, TowerPresenter, TowerPresenter.Factory>().AsSingle();
             Container.BindFactory<EnemyView, EnemyModel, EnemyPresenter, EnemyPresenter.Factory>().AsSingle();
                 // strategy Factories
             Container.BindFactory<SingleTargetAttackingStrategy, SingleTargetAttackingStrategy.Factory>().AsSingle();
+            Container.BindFactory<MultipleTargetAttackingStrategy, MultipleTargetAttackingStrategy.Factory>().AsSingle();
             Container.BindFactory<TowerCooldownStrategy, TowerCooldownStrategy.Factory>().AsSingle();
             Container.BindFactory<SimpleSortingStrategy, SimpleSortingStrategy.Factory>().AsSingle();
             Container.BindFactory<TowerDetectingStrategy, TowerDetectingStrategy.Factory>().AsSingle();
@@ -64,7 +69,8 @@ namespace Gameplay
             Container.BindFactory<BuildTowerATask, BuildTowerATask.Factory>().AsSingle();
             Container.BindFactory<BuildTowerBTask, BuildTowerBTask.Factory>().AsSingle();
             Container.BindFactory<HelloWorldGameplayTask, HelloWorldGameplayTask.Factory>().AsSingle();
-
+            
+            // Gameplay Loop
             Container.BindInterfacesAndSelfTo<GameplayLoop.GameplayLoop>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<GameplayStateMachine>().AsSingle();
             Container.Bind<PlayerTurnState>().AsSingle();

@@ -31,7 +31,7 @@ namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
             uiManager.EndTurnPresenter.TurnEnded += HandleTurnEnd;
             uiManager.PlayerHandPresenter.Activate();
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 5; i++)
             {
                 GivePlayerCards();
             }
