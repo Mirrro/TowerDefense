@@ -8,45 +8,49 @@ namespace Gameplay.PathFinding
     {
         public List<Node> GetPath(Node[,] nodes, Vector2Int start, Vector2Int end)
         {
-            var openList = new List<Node>();
-            var closedList = new HashSet<Node>();
-        
-            openList.Add(nodes[start.x, start.y]);
-
-            while (openList.Count > 0)
+            if (nodes[start.x, start.y].IsWalkable)
             {
-                var currentNode = GetLowestFCostNode(openList);
+                var openList = new List<Node>();
+                var closedList = new HashSet<Node>();
+        
+                openList.Add(nodes[start.x, start.y]);
 
-                if (currentNode.X == end.x && currentNode.Y == end.y)
+                while (openList.Count > 0)
                 {
-                    return ConstructPath(currentNode);
-                }
-            
-                openList.Remove(currentNode);
-                closedList.Add(currentNode);
+                    var currentNode = GetLowestFCostNode(openList);
 
-                foreach (var neighbourNode in GetNeighbourNodes(nodes, currentNode))
-                {
-                    if (!neighbourNode.IsWalkable || closedList.Contains(neighbourNode))
+                    if (currentNode.X == end.x && currentNode.Y == end.y)
                     {
-                        continue;
+                        return ConstructPath(currentNode);
                     }
-                
-                    float tentativeGCost = currentNode.GCost + CalculateCost(currentNode, neighbourNode);
+            
+                    openList.Remove(currentNode);
+                    closedList.Add(currentNode);
 
-                    if (tentativeGCost < neighbourNode.GCost || !openList.Contains(neighbourNode))
+                    foreach (var neighbourNode in GetNeighbourNodes(nodes, currentNode))
                     {
-                        neighbourNode.Parent = currentNode;
-                        neighbourNode.GCost = tentativeGCost;
-                        neighbourNode.HCost = CalculateHCost(neighbourNode, nodes[end.x, end.y]);
-
-                        if (!openList.Contains(neighbourNode))
+                        if (!neighbourNode.IsWalkable || closedList.Contains(neighbourNode))
                         {
-                            openList.Add(neighbourNode);
+                            continue;
+                        }
+                
+                        float tentativeGCost = currentNode.GCost + CalculateCost(currentNode, neighbourNode);
+
+                        if (tentativeGCost < neighbourNode.GCost || !openList.Contains(neighbourNode))
+                        {
+                            neighbourNode.Parent = currentNode;
+                            neighbourNode.GCost = tentativeGCost;
+                            neighbourNode.HCost = CalculateHCost(neighbourNode, nodes[end.x, end.y]);
+
+                            if (!openList.Contains(neighbourNode))
+                            {
+                                openList.Add(neighbourNode);
+                            }
                         }
                     }
                 }
             }
+            
         
             // No path found
             return new List<Node>();

@@ -12,6 +12,7 @@ namespace Gameplay.Grid
         private List<IGridElement> gridElements = new List<IGridElement>();
 
         public Vector2Int Index => index;
+        public List<IGridElement> GridElements => gridElements;
         private readonly Vector2Int index;
         public GridNode(Vector2Int index)
         {

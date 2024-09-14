@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace Gameplay.Towers.MVP
 {
-    public class TowerPresenter : IGridElement, ITickable, IDisposable
+    public class TowerPresenter : IPlaceable, ITickable, IDisposable
     {
         private readonly TowerModel model;
         private readonly TowerView view;
@@ -49,7 +49,12 @@ namespace Gameplay.Towers.MVP
         public void OnGridPosition(Vector3 position)
         {
             model.Position = position;
-            view.SetPosition(model.Position);
+            view.PlaceOnPosition(model.Position);
+        }
+
+        public void HoverGridPosition(Vector3 position)
+        {
+            view.HoverOnPosition(position);
         }
 
         public void Tick()

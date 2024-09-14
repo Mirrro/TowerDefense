@@ -8,4 +8,9 @@ namespace Gameplay.Grid
 
         public void OnGridPosition(Vector3 position);
     }
+    
+    public interface IPlaceable : IGridElement
+    {
+        public void HoverGridPosition(Vector3 position);
+    }
 }

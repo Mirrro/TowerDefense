@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gameplay.Blocks.Ground;
 using UnityEngine;
 using Zenject;
 
@@ -33,6 +34,34 @@ namespace Gameplay.Grid
         private void HandleElementRemoved()
         {
             ElementRemoved?.Invoke();
+        }
+
+        public void ActivateBuildModeVisual()
+        {
+            foreach (var gridNode in grid.GridNodes)
+            {
+                foreach (var gridElement in gridNode.GridElements)
+                {
+                    if (gridElement is IBuildModeBlock buildModeBlock)
+                    {
+                        buildModeBlock.EnterBuildMode(.5f);
+                    }
+                }
+            }
+        }
+        
+        public void DeactivateBuildModeVisual()
+        {
+            foreach (var gridNode in grid.GridNodes)
+            {
+                foreach (var gridElement in gridNode.GridElements)
+                {
+                    if (gridElement is IBuildModeBlock buildModeBlock)
+                    {
+                        buildModeBlock.ExitBuildMode(.5f);
+                    }
+                }
+            }
         }
 
         public List<Vector3> GetPath(Vector2Int start, Vector2Int end)

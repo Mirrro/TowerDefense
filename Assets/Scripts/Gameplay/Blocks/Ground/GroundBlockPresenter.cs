@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Gameplay.Blocks.Ground
 {
-    public class GroundBlockPresenter : IGridElement
+    public class GroundBlockPresenter : IGridElement, IBuildModeBlock
     {
         private readonly GroundBlockView view;
         private readonly GroundBlockModel model;
@@ -25,5 +25,21 @@ namespace Gameplay.Blocks.Ground
             model.Position = position;
             view.SetPosition(model.Position);
         }
+
+        public void EnterBuildMode(float duration)
+        {
+            view.EnterBuildMode(duration);
+        }
+
+        public void ExitBuildMode(float duration)
+        {
+            view.ExitBuildMode(duration);
+        }
+    }
+
+    public interface IBuildModeBlock
+    {
+        public void EnterBuildMode(float duration);
+        public void ExitBuildMode(float duration);
     }
 }

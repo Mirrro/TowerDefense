@@ -3978,7 +3978,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "aebb2b8812f54f23abeb29d44231ab3a",
     "m_Id": 0,
-    "m_DisplayName": "BuildModeBlend",
+    "m_DisplayName": "BuildingModeBlend",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -5273,10 +5273,10 @@
     "m_Guid": {
         "m_GuidSerialized": "51f5d374-1b7f-43d2-9a1f-31c6dfacd7cd"
     },
-    "m_Name": "BuildModeBlend",
+    "m_Name": "BuildingModeBlend",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "BuildModeBlend",
-    "m_DefaultReferenceName": "_BuildModeBlend",
+    "m_RefNameGeneratedByDisplayName": "BuildingModeBlend",
+    "m_DefaultReferenceName": "_BuildingModeBlend",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,

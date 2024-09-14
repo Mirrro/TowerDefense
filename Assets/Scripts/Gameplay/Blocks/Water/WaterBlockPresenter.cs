@@ -1,10 +1,11 @@
+using Gameplay.Blocks.Ground;
 using Gameplay.Grid;
 using UnityEngine;
 using Zenject;
 
 namespace Gameplay.Blocks.Water
 {
-    public class WaterBlockPresenter : IGridElement, ITickable
+    public class WaterBlockPresenter : IGridElement, ITickable, IBuildModeBlock
     {
         private readonly WaterBlockView view;
         private readonly WaterBlockModel model;
@@ -35,6 +36,16 @@ namespace Gameplay.Blocks.Water
                 model.ParticleCooldown = Random.Range(3, 200);
                 model.LastTimeParticleActivated = Time.time;
             }
+        }
+
+        public void EnterBuildMode(float duration)
+        {
+            view.EnterBuildMode(duration);
+        }
+
+        public void ExitBuildMode(float duration)
+        {
+            view.ExitBuildMode(duration);
         }
     }
 }

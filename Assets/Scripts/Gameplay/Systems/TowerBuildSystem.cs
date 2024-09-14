@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gameplay.Grid;
 using Gameplay.Towers.MVP;
 using Gameplay.Util;
 
@@ -10,11 +11,13 @@ namespace Gameplay.Systems
     {
         private readonly GridPlacementSystem gridPlacementSystem;
         private readonly TowerBuilder towerBuilder;
+        private readonly GridManager gridManager;
 
-        public TowerBuildSystem(GridPlacementSystem gridPlacementSystem, TowerBuilder towerBuilder)
+        public TowerBuildSystem(GridPlacementSystem gridPlacementSystem, TowerBuilder towerBuilder, GridManager gridManager)
         {
             this.gridPlacementSystem = gridPlacementSystem;
             this.towerBuilder = towerBuilder;
+            this.gridManager = gridManager;
         }
         public async UniTask BuildTower(Towers towerType, CancellationToken cancellationToken)
         {
@@ -34,7 +37,9 @@ namespace Gameplay.Systems
                     throw new ArgumentOutOfRangeException();
             }
             var registration = cancellationToken.Register(() => OnCancel(presenter));
+            gridManager.ActivateBuildModeVisual();
             await gridPlacementSystem.UserPlaceElement(presenter, cancellationToken);
+            gridManager.DeactivateBuildModeVisual();
             await registration.DisposeAsync();
         }
 

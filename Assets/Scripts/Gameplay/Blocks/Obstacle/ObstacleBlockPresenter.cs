@@ -1,9 +1,10 @@
-﻿using Gameplay.Grid;
+﻿using Gameplay.Blocks.Ground;
+using Gameplay.Grid;
 using UnityEngine;
 
 namespace Gameplay.Blocks.Obstacle
 {
-    public class ObstacleBlockPresenter : IGridElement
+    public class ObstacleBlockPresenter : IGridElement, IBuildModeBlock
     {
         private readonly ObstacleBlockView view;
         private readonly ObstacleBlockModel model;
@@ -23,6 +24,16 @@ namespace Gameplay.Blocks.Obstacle
         public void Initialize()
         {
             view.SetPosition(model.Position);
+        }
+
+        public void EnterBuildMode(float duration)
+        {
+            view.EnterBuildMode(duration);
+        }
+
+        public void ExitBuildMode(float duration)
+        {
+            view.ExitBuildMode(duration);
         }
     }
 }
