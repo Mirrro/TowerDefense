@@ -62,12 +62,14 @@ namespace Gameplay
                 // strategy Factories
             Container.BindFactory<SingleTargetAttackingStrategy, SingleTargetAttackingStrategy.Factory>().AsSingle();
             Container.BindFactory<MultipleTargetAttackingStrategy, MultipleTargetAttackingStrategy.Factory>().AsSingle();
+            Container.BindFactory<FreezeMultipleTargetAttackingStrategy, FreezeMultipleTargetAttackingStrategy.Factory>().AsSingle();
             Container.BindFactory<TowerCooldownStrategy, TowerCooldownStrategy.Factory>().AsSingle();
             Container.BindFactory<SimpleSortingStrategy, SimpleSortingStrategy.Factory>().AsSingle();
             Container.BindFactory<TowerDetectingStrategy, TowerDetectingStrategy.Factory>().AsSingle();
                 // GameplayTask Factories
             Container.BindFactory<BuildTowerATask, BuildTowerATask.Factory>().AsSingle();
             Container.BindFactory<BuildTowerBTask, BuildTowerBTask.Factory>().AsSingle();
+            Container.BindFactory<BuildTowerCTask, BuildTowerCTask.Factory>().AsSingle();
             Container.BindFactory<HelloWorldGameplayTask, HelloWorldGameplayTask.Factory>().AsSingle();
             
             // Gameplay Loop

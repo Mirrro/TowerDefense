@@ -1,9 +1,8 @@
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using Gameplay.Grid;
 using UnityEngine;
-using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Events;
-using Zenject;
 using Zenject;
 
 namespace Gameplay.Enemies
@@ -18,6 +17,8 @@ namespace Gameplay.Enemies
         private EnemyModel model;
         private EnemyView view;
 
+        private CancellationTokenSource cancellationTokenSource;
+        
         public Vector3 GetPosition()
         {
             return model.position;
@@ -47,6 +48,11 @@ namespace Gameplay.Enemies
             var path = gridManager.GetPath(gridManager.WorldToGridPosition(model.position), model.gridTargetPosition);
             view.MoveTo(path[1]);
         }
+
+        public void StopMove()
+        {
+            view.StopMove();
+        }
     
         public void SetPosition(Vector3 position)
         {
@@ -65,6 +71,22 @@ namespace Gameplay.Enemies
                 Died?.Invoke();
                 view.DestinationReached.RemoveListener(HandleDestinationReached);
             }
+        }
+
+        public void Freeze(float duration)
+        {
+            cancellationTokenSource?.Cancel();
+            cancellationTokenSource = new CancellationTokenSource();
+            SetFreeze(duration, cancellationTokenSource.Token).Forget();
+        }
+
+        private async UniTask SetFreeze(float duration, CancellationToken cancellationToken)
+        {
+            StopMove();
+            view.SetFreeze(true);
+            await UniTask.WaitForSeconds(duration, cancellationToken: cancellationToken);
+            view.SetFreeze(false);
+            Move(model.gridTargetPosition);
         }
 
         public void StealGold()
@@ -94,16 +116,5 @@ namespace Gameplay.Enemies
         {
         
         }
-    }
-
-    public interface IEnemyPresenter
-    {
-        public Vector3 GetPosition();
-        public Transform GetTransform();
-        public void Initialize();
-        public void Move(Vector2Int target);
-
-        public void StealGold();
-        public void ReceiveDamage(int amount);
     }
 }

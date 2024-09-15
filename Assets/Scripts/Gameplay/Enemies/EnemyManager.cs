@@ -38,8 +38,6 @@ namespace Gameplay.Enemies
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
             }),
             new Wave(new List<EnemyTypes>()
             {
@@ -56,6 +54,13 @@ namespace Gameplay.Enemies
             }),
             new Wave(new List<EnemyTypes>()
             {
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,

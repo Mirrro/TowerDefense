@@ -34,6 +34,10 @@ namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
             {
                 gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateShockclaw());
             }
+            for (int i = 0; i < 20; i++)
+            {
+                gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateFrostbite());
+            }
             for (int i = 0; i < 5; i++)
             {
                 gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateCinderstrike());

@@ -4,6 +4,7 @@ using Gameplay.Blocks.Water;
 using Gameplay.Enemies;
 using Gameplay.Towers.MVP;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Gameplay.Util
 {
@@ -22,11 +23,14 @@ namespace Gameplay.Util
         [SerializeField] private EnemyView enemyView;
         public EnemyView EnemyView => enemyView;
     
-        [SerializeField] private TowerView towerView;
-        public TowerView TowerView => towerView;
+        [SerializeField] private TowerView electricTowerView;
+        public TowerView ElectricTowerView => electricTowerView;
     
-        [SerializeField] private TowerView towerAView;
-        public TowerView TowerAView => towerAView;
+        [SerializeField] private TowerView fireTowerView;
+        public TowerView FireTowerView => fireTowerView;
+        
+        [SerializeField] private TowerView iceTowerView;
+        public TowerView IceTowerView => iceTowerView;
     
     }
 }

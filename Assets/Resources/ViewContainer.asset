@@ -16,5 +16,6 @@ MonoBehaviour:
   groundBlock: {fileID: 7429879130863255476, guid: 5b2f5ebb6d48e9e4397412533f8b8c4e, type: 3}
   obstacleBlock: {fileID: 4209234624984944912, guid: dbc9a5d3fa87be04493fe6a26e360dec, type: 3}
   enemyView: {fileID: 6938369085369699434, guid: cb22666ebea4e3d4ea28a344b9a4007c, type: 3}
-  towerView: {fileID: 5838392094094051210, guid: 8bb593e58d392014a8c5f1bda5d7d124, type: 3}
-  towerAView: {fileID: 6161550772142137137, guid: 615ee4505abf09c4abd7706fc2b62de0, type: 3}
+  electricTowerView: {fileID: 5838392094094051210, guid: 8bb593e58d392014a8c5f1bda5d7d124, type: 3}
+  fireTowerView: {fileID: 6161550772142137137, guid: 615ee4505abf09c4abd7706fc2b62de0, type: 3}
+  iceTowerView: {fileID: 5838392094094051210, guid: 230b8693fa5cf5a44b72327a46efcdaf, type: 3}

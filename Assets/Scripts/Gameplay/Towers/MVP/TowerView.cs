@@ -2,12 +2,14 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Gameplay.Towers.MVP
 {
     public class TowerView : MonoBehaviour, ITowerView
     {
         [SerializeField] private LineRenderer lineRenderer;
+        [SerializeField] private AudioSource audioSource;
     
         private Tween placementTween;
         private Tween attackTween;
@@ -18,6 +20,8 @@ namespace Gameplay.Towers.MVP
             this.target = target;
             attackTween?.Kill(true);
             attackTween = transform.DOJump(transform.position, .5f, 1, .5f);
+            audioSource.pitch = Random.Range(.5f, 1.5f);
+            audioSource.Play();
             await UniTask.WaitForSeconds(.5f);
             this.target = null;
             lineRenderer.positionCount = 0;

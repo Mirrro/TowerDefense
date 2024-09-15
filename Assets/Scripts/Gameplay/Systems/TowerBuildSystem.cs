@@ -25,13 +25,13 @@ namespace Gameplay.Systems
             switch (towerType)
             {
                 case Towers.TowerA:
-                    presenter = towerBuilder.CreateBasicTower();
+                    presenter = towerBuilder.CreateElectricTower();
                     break;
                 case Towers.TowerB:
-                    presenter = towerBuilder.CreateSpecialTower();
+                    presenter = towerBuilder.CreateFireTower();
                     break;
                 case Towers.TowerC:
-                    presenter = towerBuilder.CreateBasicTower();
+                    presenter = towerBuilder.CreateIceTower();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

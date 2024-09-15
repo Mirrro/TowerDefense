@@ -31,6 +31,8 @@ namespace Gameplay.Towers.MVP
         public int TowerRange => model.Range;
 
         public int TowerDamage => model.Damage;
+
+        public float TowerFreezeTime => model.FreezeTime;
     
         public float TowerReloadTime => model.ReloadTime;
 
