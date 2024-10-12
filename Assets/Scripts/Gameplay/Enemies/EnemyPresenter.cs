@@ -1,118 +1,105 @@
-using System.Threading;
-using Cysharp.Threading.Tasks;
-using Gameplay.Grid;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Zenject;
 
 namespace Gameplay.Enemies
 {
-    public class EnemyPresenter : IEnemyPresenter
+    public class EnemyPresenter : IEnemyPresenter, ITickable, IMovable, IDamageable, ITargetable, IAffectable
     {
-        [Inject] private GridManager gridManager;
-    
         public UnityEvent Died = new ();
         public UnityEvent ReachedGoal = new ();
     
-        private EnemyModel model;
-        private EnemyView view;
-
-        private CancellationTokenSource cancellationTokenSource;
+        private readonly EnemyModel model;
+        private readonly EnemyView view;
+        
+        private readonly IEnemyMoveStrategy enemyMoveStrategy;
+        private readonly IEnemyDamageStrategy enemyDamageStrategy;
+        
+        private bool isMovementPaused = false;
+        private List<IEnemyEffect> activeEffects = new ();
+        
+        public EnemyPresenter(EnemyView view, EnemyModel model, IEnemyMoveStrategy enemyMoveStrategy, IEnemyDamageStrategy enemyDamageStrategy)
+        {
+            this.view = view;
+            this.model = model;
+            this.enemyMoveStrategy = enemyMoveStrategy;
+            this.enemyDamageStrategy = enemyDamageStrategy;
+        }
         
         public Vector3 GetPosition()
         {
             return model.position;
         }
-
-        public Transform GetTransform()
+        
+        public Transform GetTarget()
         {
             return view.transform;
         }
 
-        public EnemyPresenter(EnemyView view, EnemyModel model, GridManager gridManager)
-        {
-            this.view = view;
-            this.model = model;
-            this.gridManager = gridManager;
-        }
-    
-        public void Initialize()
-        {
-            view.PositionChanged.AddListener(HandlePositionChange);
-            view.DestinationReached.AddListener(HandleDestinationReached);
-        }
+        public bool CanBeTargeted => model.Health > 0;
 
-        public void Move(Vector2Int target)
-        {
-            model.gridTargetPosition = target;
-            var path = gridManager.GetPath(gridManager.WorldToGridPosition(model.position), model.gridTargetPosition);
-            view.MoveTo(path[1]);
-        }
-
-        public void StopMove()
-        {
-            view.StopMove();
-        }
-    
         public void SetPosition(Vector3 position)
         {
             model.position = position;
-            view.UpdatePosition(position);
+            view.SetPosition(position);
         }
 
-        public void ReceiveDamage(int amount)
+        public void ReceiveDamage(int damage)
         {
-            model.Health -= amount;
-            view.ReceiveDamage();
-        
+            enemyDamageStrategy.ReceiveDamage(ref model.Health, damage);
+            view.Flash();
             if (model.Health <= 0)
             {
-                view.Die();
                 Died?.Invoke();
-                view.DestinationReached.RemoveListener(HandleDestinationReached);
+                view.Dead();
+                PauseMovement();
             }
         }
-
-        public void Freeze(float duration)
+        
+        public void SetTarget(Vector2Int target)
         {
-            cancellationTokenSource?.Cancel();
-            cancellationTokenSource = new CancellationTokenSource();
-            SetFreeze(duration, cancellationTokenSource.Token).Forget();
+            model.gridTargetPosition = target;
         }
 
-        private async UniTask SetFreeze(float duration, CancellationToken cancellationToken)
+        public void PauseMovement()
         {
-            StopMove();
-            view.SetFreeze(true);
-            await UniTask.WaitForSeconds(duration, cancellationToken: cancellationToken);
-            view.SetFreeze(false);
-            Move(model.gridTargetPosition);
+            isMovementPaused = true;
         }
 
-        public void StealGold()
+        public void ContinueMovement()
         {
-            view.Die();
+            isMovementPaused = false;
+        }
+        
+        public void AddEffect(IEnemyEffect effect)
+        {
+            effect.Apply(this);
+            activeEffects.Add(effect);
         }
 
-        private void HandlePositionChange(Vector3 position)
+        public void RemoveEffect(IEnemyEffect effect)
         {
-            model.position = position;
-        }
-
-        private void HandleDestinationReached()
-        {
-            if (gridManager.WorldToGridPosition(model.position) == model.gridTargetPosition)
+            if (activeEffects.Contains(effect))
             {
-                ReachedGoal?.Invoke();
-            }
-            else
-            {
-                var path = gridManager.GetPath(gridManager.WorldToGridPosition(model.position), model.gridTargetPosition);
-                view.MoveTo(path[1]);
+                effect.Cancel();
             }
         }
-    
-        public class Factory : PlaceholderFactory<EnemyView, EnemyModel, EnemyPresenter>
+
+        public void Tick()
+        {
+            if (!isMovementPaused)
+            {
+                Vector3 previousPos = model.position;
+                enemyMoveStrategy.Update(ref model.position, model.gridTargetPosition, model.MovementSpeed * Time.deltaTime);
+                Vector3 currentPos = model.position;
+                view.SetPosition(model.position);
+                view.SetRotation(Quaternion.LookRotation((currentPos - previousPos).normalized, view.transform.up));
+                view.SetAnimationState("isWalking", true);
+            }
+        }
+
+        public class Factory : PlaceholderFactory<EnemyView, EnemyModel, IEnemyMoveStrategy, IEnemyDamageStrategy, EnemyPresenter>
         {
         
         }

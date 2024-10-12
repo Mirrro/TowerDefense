@@ -9,6 +9,7 @@ using Gameplay.Player;
 using Gameplay.Player.Camera;
 using Gameplay.Systems;
 using Gameplay.Systems.EnemyPathMVP;
+using Gameplay.Towers;
 using Gameplay.Towers.MVP;
 using Gameplay.Towers.StateMachine;
 using Gameplay.Towers.Strategies;
@@ -58,11 +59,11 @@ namespace Gameplay
 
             // Factories
             Container.BindFactory<TowerStateMachine, TowerView, TowerModel, TowerPresenter, TowerPresenter.Factory>().AsSingle();
-            Container.BindFactory<EnemyView, EnemyModel, EnemyPresenter, EnemyPresenter.Factory>().AsSingle();
-                // strategy Factories
-            Container.BindFactory<SingleTargetAttackingStrategy, SingleTargetAttackingStrategy.Factory>().AsSingle();
-            Container.BindFactory<MultipleTargetAttackingStrategy, MultipleTargetAttackingStrategy.Factory>().AsSingle();
-            Container.BindFactory<FreezeMultipleTargetAttackingStrategy, FreezeMultipleTargetAttackingStrategy.Factory>().AsSingle();
+            Container.BindFactory<EnemyView, EnemyModel, IEnemyMoveStrategy, IEnemyDamageStrategy, EnemyPresenter, EnemyPresenter.Factory>().AsSingle();
+                // strategy Factories tower
+            Container.BindFactory<SingleTargetAttackComponent, SingleTargetAttackComponent.Factory>().AsSingle();
+            Container.BindFactory<MultipleTargetAttackComponent, MultipleTargetAttackComponent.Factory>().AsSingle();
+            Container.BindFactory<FreezeMultipleTargetAttackComponent, FreezeMultipleTargetAttackComponent.Factory>().AsSingle();
             Container.BindFactory<TowerCooldownStrategy, TowerCooldownStrategy.Factory>().AsSingle();
             Container.BindFactory<SimpleSortingStrategy, SimpleSortingStrategy.Factory>().AsSingle();
             Container.BindFactory<TowerDetectingStrategy, TowerDetectingStrategy.Factory>().AsSingle();

@@ -1,5 +1,4 @@
-﻿using Gameplay.Enemies;
-using Gameplay.Towers.MVP;
+﻿using Gameplay.Towers.MVP;
 using Gameplay.Towers.Strategies;
 using UnityEngine;
 
@@ -7,21 +6,20 @@ namespace Gameplay.Towers.StateMachine
 {
     public class TowerStateAttack : ITowerState
     {
-        private readonly EnemyManager enemyManager;
-        private readonly TowerPresenter towerPresenter;
+        private TowerPresenter towerPresenter;
     
-        private readonly ITowerAttackingStrategy towerAttackingStrategy;
+        private readonly ITowerAttackComponent towerAttackComponent;
         private readonly ITowerSortingStrategy towerSortingStrategy;
         private readonly ITowerCooldownStrategy towerCooldownStrategy;
         private readonly ITowerDetectingStrategy towerDetectingStrategy;
 
         public TowerStateAttack(
-            ITowerAttackingStrategy towerAttackingStrategy,
+            ITowerAttackComponent towerAttackComponent,
             ITowerSortingStrategy towerSortingStrategy, 
             ITowerCooldownStrategy towerCooldownStrategy,
             ITowerDetectingStrategy towerDetectingStrategy)
         {
-            this.towerAttackingStrategy = towerAttackingStrategy;
+            this.towerAttackComponent = towerAttackComponent;
             this.towerSortingStrategy = towerSortingStrategy;
             this.towerCooldownStrategy = towerCooldownStrategy;
             this.towerDetectingStrategy = towerDetectingStrategy;
@@ -29,10 +27,8 @@ namespace Gameplay.Towers.StateMachine
 
         public void Initialize(TowerPresenter towerPresenter)
         {
-            towerAttackingStrategy.Initialize(towerPresenter);
-            towerSortingStrategy.Initialize(towerPresenter);
-            towerCooldownStrategy.Initialize(towerPresenter);
-            towerDetectingStrategy.Initialize(towerPresenter);
+            this.towerPresenter = towerPresenter;
+            towerAttackComponent.Initialize(towerPresenter);
         }
 
         public void Enter()
@@ -42,18 +38,19 @@ namespace Gameplay.Towers.StateMachine
 
         public void Update()
         {
-            if (towerCooldownStrategy.IsCooldown)
+            towerCooldownStrategy.Cooldown(ref towerPresenter.Model.ReloadTime, Time.deltaTime);
+            if (towerPresenter.Model.ReloadTime > 0)
             {
                 return;
             }
 
-            var availableTargets = towerDetectingStrategy.Detect();
+            var availableTargets = towerDetectingStrategy.Detect(towerPresenter.TowerPosition, towerPresenter.TowerRange);
         
             if (availableTargets.Count > 0)
             {
-                var prioritizedTargets = towerSortingStrategy.Sort(availableTargets);
-                towerAttackingStrategy.Attack(prioritizedTargets);
-                towerCooldownStrategy.Cooldown();
+                towerSortingStrategy.Sort(ref availableTargets);
+                towerAttackComponent.Attack(availableTargets);
+                towerPresenter.Model.ReloadTime = towerPresenter.Model.MaxReloadTime;
             }
         }
 

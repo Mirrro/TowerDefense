@@ -2,8 +2,8 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gameplay.Grid;
+using Gameplay.Towers;
 using Gameplay.Towers.MVP;
-using Gameplay.Util;
 
 namespace Gameplay.Systems
 {

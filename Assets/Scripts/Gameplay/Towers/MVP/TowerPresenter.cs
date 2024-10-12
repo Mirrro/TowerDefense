@@ -32,20 +32,15 @@ namespace Gameplay.Towers.MVP
 
         public int TowerDamage => model.Damage;
 
-        public float TowerFreezeTime => model.FreezeTime;
-    
-        public float TowerReloadTime => model.ReloadTime;
+        public TowerModel Model => model;
+        
+        public TowerView View => view;
 
         public Vector3 TowerPosition => model.Position;
 
         public void ActivateBattleMode()
         {
             towerStateMachine.SetState(towerStateMachine.AttackState);
-        }
-
-        public void FireAtTarget(Transform target, Action callback)
-        {
-            view.FireAtTarget(target, callback);
         }
 
         public void OnGridPosition(Vector3 position)

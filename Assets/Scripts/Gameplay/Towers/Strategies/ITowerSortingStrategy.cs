@@ -6,7 +6,6 @@ namespace Gameplay.Towers.Strategies
 {
     public interface ITowerSortingStrategy
     {
-        public void Initialize(TowerPresenter towerPresenter);
-        public List<IEnemyPresenter> Sort(List<IEnemyPresenter> targets);
+        public void Sort(ref List<ITargetable> targets);
     }
 }

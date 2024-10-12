@@ -4,8 +4,6 @@ namespace Gameplay.Towers.Strategies
 {
     public interface ITowerCooldownStrategy
     {
-        public void Initialize(TowerPresenter towerPresenter);
-        public bool IsCooldown { get; }
-        public void Cooldown();
+        public void Cooldown(ref float cooldown, float deltaTime);
     }
 }

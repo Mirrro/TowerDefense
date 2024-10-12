@@ -4,15 +4,16 @@ namespace Gameplay.Enemies
 {
     public class EnemyModel
     {
-        public float Health;
+        public int Health;
         public Vector3 position;
         public Vector2Int gridTargetPosition;
-        public float MovementSpeed = 1;
+        public float MovementSpeed;
     
 
-        public EnemyModel(float health)
+        public EnemyModel(int health, float movementSpeed)
         {
             Health = health;
+            MovementSpeed = movementSpeed;
         }
     }
 }

@@ -2,27 +2,28 @@
 using Gameplay.Towers.MVP;
 using Gameplay.Towers.StateMachine;
 using Gameplay.Towers.Strategies;
+using Gameplay.Util;
 using UnityEngine;
 using Zenject;
 
-namespace Gameplay.Util
+namespace Gameplay.Towers
 {
     public class TowerBuilder : ITickable
     {
         private const string path = "ViewContainer";
         private TowerPresenter.Factory towerFactory;
-        private readonly SingleTargetAttackingStrategy.Factory singleTargetAttackStrategyFactory;
-        private readonly MultipleTargetAttackingStrategy.Factory multipleTargetAttackStrategyFactory;
-        private readonly FreezeMultipleTargetAttackingStrategy.Factory freezeMultipleTargetAttackingStrategy;
+        private readonly SingleTargetAttackComponent.Factory singleTargetAttackStrategyFactory;
+        private readonly MultipleTargetAttackComponent.Factory multipleTargetAttackStrategyFactory;
+        private readonly FreezeMultipleTargetAttackComponent.Factory freezeMultipleTargetAttackingStrategy;
         private readonly TowerDetectingStrategy.Factory towerDetectingStrategyFactory;
         private readonly SimpleSortingStrategy.Factory simpleSortingStrategyFactory;
         private readonly TowerCooldownStrategy.Factory cooldownStrategyFactory;
         private List<TowerPresenter> towerPresenters = new();
 
         public TowerBuilder(TowerPresenter.Factory towerFactory, 
-            SingleTargetAttackingStrategy.Factory singleTargetAttackStrategyFactory,
-            MultipleTargetAttackingStrategy.Factory multipleTargetAttackStrategyFactory,
-            FreezeMultipleTargetAttackingStrategy.Factory freezeMultipleTargetAttackingStrategy,
+            SingleTargetAttackComponent.Factory singleTargetAttackStrategyFactory,
+            MultipleTargetAttackComponent.Factory multipleTargetAttackStrategyFactory,
+            FreezeMultipleTargetAttackComponent.Factory freezeMultipleTargetAttackingStrategy,
             TowerDetectingStrategy.Factory towerDetectingStrategyFactory,
             SimpleSortingStrategy.Factory simpleSortingStrategyFactory,
             TowerCooldownStrategy.Factory cooldownStrategyFactory)
@@ -43,7 +44,7 @@ namespace Gameplay.Util
             TowerPresenter towerPresenter = towerFactory.Create(
                 CreateElectricTowerStateMachine(),
                 Object.Instantiate(container.ElectricTowerView, Vector3.zero, Quaternion.identity), 
-                new TowerModel(Vector3.zero, 1, 10, .5f, 0));
+                new TowerModel(Vector3.zero, 1, 10, .5f));
             towerPresenter.Initialize();
             towerPresenters.Add(towerPresenter);
             return towerPresenter;
@@ -68,7 +69,7 @@ namespace Gameplay.Util
             TowerPresenter towerPresenter = towerFactory.Create(
                 CreateFireTowerStateMachine(),
                 Object.Instantiate(container.FireTowerView, Vector3.zero, Quaternion.identity), 
-                new TowerModel(Vector3.zero, 4, 500, 3f, 0));
+                new TowerModel(Vector3.zero, 4, 500, 3f));
             towerPresenter.Initialize();
             towerPresenters.Add(towerPresenter);
             return towerPresenter;
@@ -93,7 +94,7 @@ namespace Gameplay.Util
             TowerPresenter towerPresenter = towerFactory.Create(
                 CreateIceTowerStateMachine(),
                 Object.Instantiate(container.IceTowerView, Vector3.zero, Quaternion.identity), 
-                new TowerModel(Vector3.zero, 1, 0, 2f, .8f));
+                new TowerModel(Vector3.zero, 1, 0, 2f));
             towerPresenter.Initialize();
             towerPresenters.Add(towerPresenter);
             return towerPresenter;

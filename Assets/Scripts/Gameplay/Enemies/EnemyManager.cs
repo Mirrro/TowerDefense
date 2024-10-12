@@ -1,19 +1,15 @@
 ﻿using System;
-using System;
-using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq;
-using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Gameplay.Grid;
 using Gameplay.Util;
 using UnityEngine;
-using UnityEngine;
+using Zenject;
 
 namespace Gameplay.Enemies
 {
-    public class EnemyManager
+    public class EnemyManager : ITickable
     {
         public event Action<IEnemyPresenter> EnemyDied;
         public event Action<IEnemyPresenter> EnemyReachedGoal;
@@ -26,17 +22,13 @@ namespace Gameplay.Enemies
         public int ActiveEnemiesCount => activeEnemies.Count;
         private List<IEnemyPresenter> activeEnemies = new ();
 
-        private Vector2Int startPos = new Vector2Int(0,0);
-        private Vector2Int endPos = new Vector2Int(29, 7);
+        private Vector2Int startPos = new (0,0);
+        private Vector2Int endPos = new (29, 7);
 
-        private List<Wave> waves = new List<Wave>()
+        private List<Wave> waves = new ()
         {
             new Wave(new List<EnemyTypes>()
             {
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
             }),
             new Wave(new List<EnemyTypes>()
@@ -142,7 +134,7 @@ namespace Gameplay.Enemies
 
             foreach (var enemyType in waves[currentWaveIndex].Enemies)
             {
-                SpawnEnemy(enemyType, startPos, endPos);
+                SpawnEnemy(startPos);
                 await UniTask.WaitForSeconds(1f);
             }
             callback?.Invoke();
@@ -154,11 +146,11 @@ namespace Gameplay.Enemies
             }
         }
 
-        public void SpawnEnemy(EnemyTypes enemyTypes, Vector2Int startPos, Vector2Int endPosition)
+        public void SpawnEnemy(Vector2Int startPos)
         {
             var enemy = enemyBuilder.CreateBasicEnemy();
             enemy.SetPosition(new Vector3(startPos.x, 0, startPos.y));
-            enemy.Move(endPosition);
+            enemy.SetTarget(EndPos);
             enemy.Died.AddListener(() => HandleDeath(enemy));
             enemy.ReachedGoal.AddListener(() => HandleEnemyReachedGoal(enemy));
             activeEnemies.Add(enemy);
@@ -174,7 +166,6 @@ namespace Gameplay.Enemies
         {
             EnemyReachedGoal?.Invoke(enemy);
             activeEnemies.Remove(enemy);
-            enemy.StealGold();
         }
 
         public IEnumerable<IEnemyPresenter> FindEnemiesOnGrid(Vector3 position, int radius)
@@ -189,6 +180,17 @@ namespace Gameplay.Enemies
         {
             int distance = Math.Max(Math.Abs(target.x - origin.x), Math.Abs(target.y - origin.y));
             return distance <= radius;
+        }
+
+        public void Tick()
+        {
+            foreach (var enemyPresenter in activeEnemies)
+            {
+                if (enemyPresenter is ITickable tickable)
+                {
+                    tickable.Tick();
+                }
+            }
         }
     }
 

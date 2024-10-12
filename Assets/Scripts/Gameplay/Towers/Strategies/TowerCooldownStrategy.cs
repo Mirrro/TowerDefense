@@ -6,19 +6,9 @@ namespace Gameplay.Towers.Strategies
 {
     public class TowerCooldownStrategy : ITowerCooldownStrategy
     {
-        private float startTime = 0;
-        private TowerPresenter towerPresenter;
-
-        public void Initialize(TowerPresenter towerPresenter)
+        public void Cooldown(ref float cooldown, float deltaTime)
         {
-            this.towerPresenter = towerPresenter;
-        }
-
-        public bool IsCooldown => Time.time < startTime + towerPresenter.TowerReloadTime;
-
-        public void Cooldown()
-        {
-            startTime = Time.time;
+            cooldown -= deltaTime;
         }
 
         public class Factory : PlaceholderFactory<TowerCooldownStrategy>

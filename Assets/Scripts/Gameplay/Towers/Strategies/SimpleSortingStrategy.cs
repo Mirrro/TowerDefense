@@ -7,14 +7,9 @@ namespace Gameplay.Towers.Strategies
 {
     public class SimpleSortingStrategy : ITowerSortingStrategy
     {
-        public void Initialize(TowerPresenter _)
+        public void Sort(ref List<ITargetable> targets)
         {
             
-        }
-
-        public List<IEnemyPresenter> Sort(List<IEnemyPresenter> targets)
-        {
-            return targets;
         }
         
         public class Factory : PlaceholderFactory<SimpleSortingStrategy>

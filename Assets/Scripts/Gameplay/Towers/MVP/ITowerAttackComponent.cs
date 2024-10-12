@@ -3,9 +3,9 @@ using Gameplay.Enemies;
 
 namespace Gameplay.Towers.MVP
 {
-    public interface ITowerAttackingStrategy
+    public interface ITowerAttackComponent
     {
         public void Initialize(TowerPresenter towerPresenter);
-        public void Attack(List<IEnemyPresenter> enemyPresenters);
+        public void Attack(List<ITargetable> targetables);
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Gameplay.Enemies;
 using Gameplay.Towers.MVP;
+using UnityEngine;
 using Zenject;
 
 namespace Gameplay.Towers.Strategies
@@ -10,21 +11,14 @@ namespace Gameplay.Towers.Strategies
     {
         private readonly EnemyManager enemyManager;
 
-        private TowerPresenter towerPresenter;
-
         private TowerDetectingStrategy(EnemyManager enemyManager)
         {
             this.enemyManager = enemyManager;
         }
 
-        public void Initialize(TowerPresenter towerPresenter)
+        public List<ITargetable> Detect(Vector3 position, int range)
         {
-            this.towerPresenter = towerPresenter;
-        }
-
-        public List<IEnemyPresenter> Detect()
-        {
-            return enemyManager.FindEnemiesOnGrid(towerPresenter.TowerPosition, towerPresenter.TowerRange).ToList();
+            return enemyManager.FindEnemiesOnGrid(position, range).OfType<ITargetable>().ToList();
         }
         
         public class Factory : PlaceholderFactory<TowerDetectingStrategy>

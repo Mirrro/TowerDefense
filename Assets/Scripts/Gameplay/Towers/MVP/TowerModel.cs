@@ -8,15 +8,14 @@ namespace Gameplay.Towers.MVP
         public int Range;
         public int Damage;
         public float ReloadTime;
-        public float FreezeTime;
+        public float MaxReloadTime;
 
-        public TowerModel(Vector3 position, int range, int damage, float reloadTime, float freezeTime)
+        public TowerModel(Vector3 position, int range, int damage, float maxReloadTime)
         {
             Position = position;
             Range = range;
             Damage = damage;
-            ReloadTime = reloadTime;
-            FreezeTime = freezeTime;
+            MaxReloadTime = maxReloadTime;
         }
     }
 }
