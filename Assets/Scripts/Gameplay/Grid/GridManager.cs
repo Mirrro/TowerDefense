@@ -21,7 +21,7 @@ namespace Gameplay.Grid
         public void Initialize()
         {
             grid = new Grid();
-            grid.Initialize(new Vector2Int(30,8));
+            grid.Initialize(new Vector2Int(30,30));
             grid.ElementAdded += HandleElementAdded;
             grid.ElementRemoved += HandleElementRemoved;
         }

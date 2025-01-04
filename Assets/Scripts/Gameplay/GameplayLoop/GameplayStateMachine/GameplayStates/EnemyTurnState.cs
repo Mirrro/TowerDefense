@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Gameplay.Enemies;
 using Gameplay.Systems;
@@ -47,7 +48,7 @@ namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
         {
             if (isWaveComplete)
             {
-                if (enemyManager.ActiveEnemiesCount <= 0)
+                if (enemyManager.ActiveEnemies.All(enemy => !enemy.IsAlive))
                 {
                     StateComplete?.Invoke();
                 }
@@ -56,6 +57,7 @@ namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
 
         public void Deactivate()
         {
+            enemyManager.Clear();
             deathRewardSystem.Deactivate();
             enemyReachGoalSystem.Deactivate();
             isWaveComplete = false;

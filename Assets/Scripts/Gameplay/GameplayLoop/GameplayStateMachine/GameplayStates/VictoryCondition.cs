@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Gameplay.Enemies;
 using Zenject;
 
@@ -25,7 +26,7 @@ namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
         {
             if (isFinalWave)
             {
-                if (enemyManager.ActiveEnemiesCount <= 0)
+                if (enemyManager.ActiveEnemies.All(enemy => !enemy.IsAlive))
                 {
                     Victory?.Invoke();
                 }

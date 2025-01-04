@@ -2,7 +2,7 @@
 {
     public interface IEnemyEffect
     {
-        void Apply(IEnemyPresenter enemyPresenter);
+        void Apply(EnemyPresenter enemyPresenter);
         void Cancel();
     }
 }

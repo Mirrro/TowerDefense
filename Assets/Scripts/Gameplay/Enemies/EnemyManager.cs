@@ -11,58 +11,53 @@ namespace Gameplay.Enemies
 {
     public class EnemyManager : ITickable
     {
-        public event Action<IEnemyPresenter> EnemyDied;
-        public event Action<IEnemyPresenter> EnemyReachedGoal;
+        public event Action EnemyDied;
+        public event Action EnemyReachedGoal;
         public event Action FinalWaveSend;
         public Vector2Int StartPos => startPos;
         public Vector2Int EndPos => endPos;
     
         private readonly GridManager gridManager;
         private readonly EnemyBuilder enemyBuilder;
-        public int ActiveEnemiesCount => activeEnemies.Count;
-        private List<IEnemyPresenter> activeEnemies = new ();
+        public List<EnemyPresenter> ActiveEnemies => activeEnemies.Select(x => x.Presenter).ToList();
+        private List<EnemyPresenterBuild> activeEnemies = new ();
 
         private Vector2Int startPos = new (0,0);
-        private Vector2Int endPos = new (29, 7);
+        private Vector2Int endPos = new (15, 15);
 
         private List<Wave> waves = new ()
         {
             new Wave(new List<EnemyTypes>()
             {
-                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
             }),
             new Wave(new List<EnemyTypes>()
             {
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
             }),
             new Wave(new List<EnemyTypes>()
             {
+                EnemyTypes.Mage,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
+                EnemyTypes.Mage,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
+                EnemyTypes.Mage,
                 EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
@@ -70,6 +65,25 @@ namespace Gameplay.Enemies
             }),
             new Wave(new List<EnemyTypes>()
             {
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
@@ -77,41 +91,22 @@ namespace Gameplay.Enemies
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Warrior,
+                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
-                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
@@ -134,7 +129,19 @@ namespace Gameplay.Enemies
 
             foreach (var enemyType in waves[currentWaveIndex].Enemies)
             {
-                SpawnEnemy(startPos);
+                switch (enemyType)
+                {
+                    case EnemyTypes.Warrior:
+                        SpawnWarriorEnemy(startPos);
+                        break;
+                    case EnemyTypes.Rouge:
+                        break;
+                    case EnemyTypes.Mage:
+                        SpawnMageEnemy(startPos);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
                 await UniTask.WaitForSeconds(1f);
             }
             callback?.Invoke();
@@ -146,34 +153,35 @@ namespace Gameplay.Enemies
             }
         }
 
-        public void SpawnEnemy(Vector2Int startPos)
+        public void SpawnWarriorEnemy(Vector2Int startPos)
         {
-            var enemy = enemyBuilder.CreateBasicEnemy();
-            enemy.SetPosition(new Vector3(startPos.x, 0, startPos.y));
-            enemy.SetTarget(EndPos);
-            enemy.Died.AddListener(() => HandleDeath(enemy));
-            enemy.ReachedGoal.AddListener(() => HandleEnemyReachedGoal(enemy));
+            var enemy = enemyBuilder.CreateWarriorEnemy();
+            enemy.Presenter.SetPosition(new Vector3(startPos.x, 0, startPos.y));
+            enemy.Presenter.SetTarget(EndPos);
+            enemy.Presenter.Died.AddListener(HandleDeath);
+            activeEnemies.Add(enemy);
+        }
+        
+        public void SpawnMageEnemy(Vector2Int startPos)
+        {
+            var enemy = enemyBuilder.CreateMageEnemy();
+            enemy.Presenter.SetPosition(new Vector3(startPos.x, 0, startPos.y));
+            enemy.Presenter.SetTarget(EndPos);
+            enemy.Presenter.Died.AddListener(HandleDeath);
             activeEnemies.Add(enemy);
         }
 
-        private void HandleDeath(IEnemyPresenter enemyPresenter)
+        private void HandleDeath()
         {
-            activeEnemies.Remove(enemyPresenter);
-            EnemyDied?.Invoke(enemyPresenter);
+            EnemyDied?.Invoke();
         }
 
-        private void HandleEnemyReachedGoal(IEnemyPresenter enemy)
+        public IEnumerable<EnemyPresenter> FindEnemiesOnGrid(Vector3 position, int radius)
         {
-            EnemyReachedGoal?.Invoke(enemy);
-            activeEnemies.Remove(enemy);
-        }
-
-        public IEnumerable<IEnemyPresenter> FindEnemiesOnGrid(Vector3 position, int radius)
-        {
-            return activeEnemies.Where(enemy => IsInRadius(
+            return ActiveEnemies.Where(enemy => IsInRadius(
                 origin: gridManager.WorldToGridPosition(position),
                 radius: radius,
-                target: gridManager.WorldToGridPosition(enemy.GetPosition())));
+                target: gridManager.WorldToGridPosition(enemy.Model.Position)));
         }
 
         private bool IsInRadius(Vector2Int origin, int radius, Vector2Int target)
@@ -184,12 +192,22 @@ namespace Gameplay.Enemies
 
         public void Tick()
         {
-            foreach (var enemyPresenter in activeEnemies)
+            foreach (var enemyPresenter in ActiveEnemies)
             {
                 if (enemyPresenter is ITickable tickable)
                 {
                     tickable.Tick();
                 }
+            }
+        }
+
+        public void Clear()
+        {
+            var cached = new List<EnemyPresenterBuild>(activeEnemies);
+            activeEnemies.Clear();
+            foreach (var enemyPresenterBuild in cached)
+            {
+                enemyPresenterBuild.Dispose();
             }
         }
     }

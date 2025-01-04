@@ -16,6 +16,7 @@ using Gameplay.Towers.Strategies;
 using Gameplay.UserInterface;
 using Gameplay.Util;
 using UnityEngine;
+using UnityEngine.Pool;
 using Zenject;
 
 namespace Gameplay
@@ -25,6 +26,8 @@ namespace Gameplay
         [SerializeField] private CameraView cameraView;
         [SerializeField] private UIViewReferences uiViewReferences;
         [SerializeField] private EnemyPathView enemyPathView;
+        [SerializeField] private EnemyView warriorEnemyViewPrefab;
+        [SerializeField] private EnemyView mageEnemyViewPrefab;
 
         public override void InstallBindings()
         {
@@ -42,6 +45,7 @@ namespace Gameplay
             // Enemies
             Container.BindInterfacesAndSelfTo<EnemyManager>().AsSingle();
             Container.BindInterfacesAndSelfTo<EnemyBuilder>().AsSingle();
+            Container.BindInterfacesAndSelfTo<EnemyViewPool>().AsSingle().WithArguments(mageEnemyViewPrefab, warriorEnemyViewPrefab);
             
             // Mechanics
             Container.BindInterfacesAndSelfTo<EnemyDeathRewardSystem>().AsSingle();   
@@ -59,7 +63,7 @@ namespace Gameplay
 
             // Factories
             Container.BindFactory<TowerStateMachine, TowerView, TowerModel, TowerPresenter, TowerPresenter.Factory>().AsSingle();
-            Container.BindFactory<EnemyView, EnemyModel, IEnemyMoveStrategy, IEnemyDamageStrategy, EnemyPresenter, EnemyPresenter.Factory>().AsSingle();
+            Container.BindFactory<IEnemyView, EnemyModel, IEnemyMoveStrategy, IEnemyDamageStrategy, EnemyPresenter, EnemyPresenter.Factory>().AsSingle();
                 // strategy Factories tower
             Container.BindFactory<SingleTargetAttackComponent, SingleTargetAttackComponent.Factory>().AsSingle();
             Container.BindFactory<MultipleTargetAttackComponent, MultipleTargetAttackComponent.Factory>().AsSingle();
@@ -82,5 +86,11 @@ namespace Gameplay
             Container.Bind<VictoryState>().AsSingle();
             Container.Bind<InitializationState>().AsSingle();
         }
+    }
+    
+    public enum EnemyViewPoolIDs
+    {
+        Warrior = 0,
+        Mage = 1,
     }
 }

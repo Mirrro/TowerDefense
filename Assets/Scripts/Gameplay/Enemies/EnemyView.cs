@@ -1,16 +1,24 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Gameplay.Enemies
 {
-    public class EnemyView : MonoBehaviour
+    public class EnemyView : MonoBehaviour, IPoolable, IEnemyView
     {
         [SerializeField] private Animator animator;
         [SerializeField] private List<Renderer> renderers;
-
-        private float lastUpdateTime;
+        [SerializeField] private Healthbar healthbar;
+        [SerializeField] private Transform targetPoint;
+        
         private Sequence flash;
+        private Sequence dissolve;
+
+        public UnityEvent mouseDown = new UnityEvent();
+        public Transform TargetPoint => targetPoint ?? transform;
+        public Transform Transform => transform;
+        public UnityEvent MouseDown => mouseDown;
 
         public void SetPosition(Vector3 position)
         {
@@ -24,39 +32,67 @@ namespace Gameplay.Enemies
 
         public void Flash()
         {
-            flash?.Kill();
+            flash?.Kill(complete: true);
             flash = DOTween.Sequence();
             foreach (var renderer in renderers)
             {
                 flash.Join(renderer.material.DOColor(Color.red, .1f).SetLoops(2, LoopType.Yoyo));
             }
+
+            flash.Join(transform.DOPunchScale(Vector3.one * .1f, .1f, 2));
         }
 
-        public void Dead()
+        public void Spawn()
         {
-            animator.SetTrigger("isDead");
+            animator.SetTrigger("Spawn");
+        }
+
+        public void SetWalk(bool isWalking)
+        {
+            animator.SetBool("isWalking", isWalking);
+        }
+
+        public void SetAnimatorSpeed(float speed)
+        {
+            animator.speed = speed;
+        }
+
+        public void SetDead(bool isDead)
+        {
+            animator.SetBool("isDead", isDead);
+            dissolve?.Kill(complete: true);
+            dissolve = DOTween.Sequence();
             foreach (var renderer in renderers)
             {
-                renderer.material.DOFloat(1, "_Dissolve", 1);
+                dissolve.Join(renderer.material.DOFloat(1, "_Dissolve", 1).OnComplete(() => gameObject.SetActive(false)));
             }
         }
 
-        public List<Renderer> Renderers => renderers;
-
-        public Bounds GetBounds()
+        public void SetHealthBarFill(float percentage)
         {
-            var bounds = new Bounds();
-            foreach (var renderer in renderers)
-            {
-                bounds.Encapsulate(renderer.bounds);
-            }
-
-            return bounds;
+            healthbar.SetHealth(percentage);
         }
 
-        public void SetAnimationState(string stateName, bool isActive)
+        public void OnReleased()
         {
-            animator.SetBool(stateName, isActive);
+            flash?.Kill(complete: true);
+            dissolve?.Kill(complete: true);
+
+            animator.ResetTrigger("Spawn");
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isDead", false);
+            animator.speed = 1;
+            
+            foreach (var renderer in renderers)
+            {
+                renderer.material.SetFloat("_Dissolve", 0);
+                renderer.material.color = Color.white;
+            }
+        }
+
+        private void OnMouseDown()
+        {
+            MouseDown?.Invoke();
         }
     }
 }

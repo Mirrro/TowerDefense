@@ -24,7 +24,7 @@ namespace Gameplay.Systems
             enemyManager.EnemyReachedGoal -= HandleEnemyDeath;
         }
 
-        private void HandleEnemyDeath(IEnemyPresenter enemyPresenter)
+        private void HandleEnemyDeath()
         {
             playerHealth.RemoveHealth(1);
         }

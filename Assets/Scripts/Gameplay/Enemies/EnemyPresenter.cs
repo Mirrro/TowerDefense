@@ -1,75 +1,79 @@
 using System.Collections.Generic;
+using Gameplay.Enemies;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Pool;
 using Zenject;
 
 namespace Gameplay.Enemies
 {
-    public class EnemyPresenter : IEnemyPresenter, ITickable, IMovable, IDamageable, ITargetable, IAffectable
+    public class EnemyPresenter : ITickable, IMovable, IDamageable, ITargetable, IAffectable
     {
         public UnityEvent Died = new ();
-        public UnityEvent ReachedGoal = new ();
-    
-        private readonly EnemyModel model;
-        private readonly EnemyView view;
+
+        public readonly EnemyModel Model;
+        public readonly IEnemyView View;
         
         private readonly IEnemyMoveStrategy enemyMoveStrategy;
         private readonly IEnemyDamageStrategy enemyDamageStrategy;
         
-        private bool isMovementPaused = false;
         private List<IEnemyEffect> activeEffects = new ();
         
-        public EnemyPresenter(EnemyView view, EnemyModel model, IEnemyMoveStrategy enemyMoveStrategy, IEnemyDamageStrategy enemyDamageStrategy)
+        public EnemyPresenter(IEnemyView view, EnemyModel model, IEnemyMoveStrategy enemyMoveStrategy, IEnemyDamageStrategy enemyDamageStrategy)
         {
-            this.view = view;
-            this.model = model;
+            View = view;
+            Model = model;
             this.enemyMoveStrategy = enemyMoveStrategy;
             this.enemyDamageStrategy = enemyDamageStrategy;
+            View.MouseDown.AddListener(HandleMouseDown);
         }
-        
-        public Vector3 GetPosition()
+
+        private void HandleMouseDown()
         {
-            return model.position;
+            Debug.Log("You clicked me :3");
         }
         
         public Transform GetTarget()
         {
-            return view.transform;
+            return View.TargetPoint;
         }
 
-        public bool CanBeTargeted => model.Health > 0;
+        public bool CanBeTargeted => Model.Health > 0;
+        public bool IsAlive => Model.Health > 0;
 
         public void SetPosition(Vector3 position)
         {
-            model.position = position;
-            view.SetPosition(position);
+            View.Spawn();
+            Model.Position = position;
+            View.SetPosition(position);
         }
 
         public void ReceiveDamage(int damage)
         {
-            enemyDamageStrategy.ReceiveDamage(ref model.Health, damage);
-            view.Flash();
-            if (model.Health <= 0)
+            enemyDamageStrategy.ReceiveDamage(ref Model.Health, damage);
+            View.Flash();
+            View.SetHealthBarFill((float) Model.Health/Model.MaxHealth);
+            if (Model.Health <= 0)
             {
                 Died?.Invoke();
-                view.Dead();
+                View.SetDead(true);
                 PauseMovement();
             }
         }
         
         public void SetTarget(Vector2Int target)
         {
-            model.gridTargetPosition = target;
+            Model.GridTargetPosition = target;
         }
 
         public void PauseMovement()
         {
-            isMovementPaused = true;
+            Model.MovementPauseCounter++;
         }
 
         public void ContinueMovement()
         {
-            isMovementPaused = false;
+            Model.MovementPauseCounter--;
         }
         
         public void AddEffect(IEnemyEffect effect)
@@ -88,20 +92,37 @@ namespace Gameplay.Enemies
 
         public void Tick()
         {
-            if (!isMovementPaused)
+            if (Model.MovementPauseCounter <= 0)
             {
-                Vector3 previousPos = model.position;
-                enemyMoveStrategy.Update(ref model.position, model.gridTargetPosition, model.MovementSpeed * Time.deltaTime);
-                Vector3 currentPos = model.position;
-                view.SetPosition(model.position);
-                view.SetRotation(Quaternion.LookRotation((currentPos - previousPos).normalized, view.transform.up));
-                view.SetAnimationState("isWalking", true);
+                Vector3 previousPos = Model.Position;
+                enemyMoveStrategy.Update(ref Model.Position, Model.GridTargetPosition, Model.MovementSpeed * Time.deltaTime);
+                Vector3 currentPos = Model.Position;
+                View.SetPosition(Model.Position);
+                View.SetRotation(Quaternion.LookRotation((currentPos - previousPos).normalized, View.Transform.up));
+                View.SetWalk(true);
+            }
+            else
+            {
+                View.SetWalk(false);
             }
         }
+        
+        public void Dispose()
+        {
+            Died?.RemoveAllListeners();
+        }
 
-        public class Factory : PlaceholderFactory<EnemyView, EnemyModel, IEnemyMoveStrategy, IEnemyDamageStrategy, EnemyPresenter>
+        public class Factory : PlaceholderFactory<IEnemyView, EnemyModel, IEnemyMoveStrategy, IEnemyDamageStrategy, EnemyPresenter>
         {
         
         }
     }
+}
+
+public interface IEnemyComponent
+{
+    void Initialize(IEnemyView enemyView );
+    void Start();
+    void Tick();
+    void Stop();
 }

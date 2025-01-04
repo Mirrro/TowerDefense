@@ -428,6 +428,8 @@ MonoBehaviour:
   cameraView: {fileID: 78940981}
   uiViewReferences: {fileID: 586108557}
   enemyPathView: {fileID: 2104184910}
+  warriorEnemyViewPrefab: {fileID: 6938369085369699434, guid: cb22666ebea4e3d4ea28a344b9a4007c, type: 3}
+  mageEnemyViewPrefab: {fileID: 305221684480560595, guid: 52816b724a4b2d14ba358468abe6a67d, type: 3}
 --- !u!114 &1650419961
 MonoBehaviour:
   m_ObjectHideFlags: 0

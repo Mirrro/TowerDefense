@@ -24,7 +24,7 @@ namespace Gameplay.Systems
             enemyManager.EnemyDied -= HandleEnemyDeath;
         }
 
-        private void HandleEnemyDeath(IEnemyPresenter obj)
+        private void HandleEnemyDeath()
         {
             playerBank.AddMoney(25);
         }

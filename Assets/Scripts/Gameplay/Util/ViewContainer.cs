@@ -20,7 +20,7 @@ namespace Gameplay.Util
         [SerializeField] private ObstacleBlockView obstacleBlock;
         public ObstacleBlockView ObstacleBlockView => obstacleBlock;
     
-        [SerializeField] private EnemyView enemyView;
+        [FormerlySerializedAs("warriorEnemyView")] [SerializeField] private EnemyView enemyView;
         public EnemyView EnemyView => enemyView;
     
         [SerializeField] private TowerView electricTowerView;
