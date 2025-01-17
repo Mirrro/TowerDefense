@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using Gameplay.Enemies;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Pool;
 using Zenject;
 
 namespace Gameplay.Enemies
@@ -30,7 +28,7 @@ namespace Gameplay.Enemies
 
         private void HandleMouseDown()
         {
-            Debug.Log("You clicked me :3");
+            Debug.Log("You have a click on me :3");
         }
         
         public Transform GetTarget()
@@ -95,10 +93,10 @@ namespace Gameplay.Enemies
             if (Model.MovementPauseCounter <= 0)
             {
                 Vector3 previousPos = Model.Position;
-                enemyMoveStrategy.Update(ref Model.Position, Model.GridTargetPosition, Model.MovementSpeed * Time.deltaTime);
+                enemyMoveStrategy.Update(ref Model.Position, ref Model.Rotation, Model.GridTargetPosition, Model.MovementSpeed * Time.deltaTime);
                 Vector3 currentPos = Model.Position;
                 View.SetPosition(Model.Position);
-                View.SetRotation(Quaternion.LookRotation((currentPos - previousPos).normalized, View.Transform.up));
+                View.SetRotation(Model.Rotation);
                 View.SetWalk(true);
             }
             else
@@ -117,12 +115,4 @@ namespace Gameplay.Enemies
         
         }
     }
-}
-
-public interface IEnemyComponent
-{
-    void Initialize(IEnemyView enemyView );
-    void Start();
-    void Tick();
-    void Stop();
 }

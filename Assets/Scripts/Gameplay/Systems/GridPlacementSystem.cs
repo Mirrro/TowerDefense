@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gameplay.Blocks.Water;
 using Gameplay.Enemies;
 using Gameplay.Grid;
+using Gameplay.PathFinding;
 using UnityEngine;
 
 namespace Gameplay.Systems
@@ -71,13 +74,65 @@ namespace Gameplay.Systems
             gridInteraction.OnGridCellHovered -= HandleGridHovered;
         }
 
+        /// <summary>
+        /// This one can place only on water blocks. ToDo: Can we unify the placement functions and not hardcode the criteria for placement?
+        /// </summary>
+        /// <param name="gridElement"></param>
+        /// <param name="cancellationToken"></param>
+        public async UniTask UserPlaceBridge(IPlaceable gridElement, CancellationToken cancellationToken)
+        {
+            var completionSource = new UniTaskCompletionSource();
+        
+            cancellationToken.Register(() =>
+            {
+                gridInteraction.OnGridCellHovered -= HandleGridHovered;
+                gridInteraction.OnGridCellSelected -= HandleGridSelected;
+                completionSource.TrySetCanceled();
+            });
+            
+            void HandleGridHovered(Vector2Int position)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled();
+                    return;
+                }
+
+                GridNode hoveredGridNode = gridManager.Grid.GridNodes[position.x, position.y];
+                if (hoveredGridNode.GridElements.Any(x => x is WaterBlockPresenter) && EnsurePath(position))
+                {
+                    gridElement.HoverGridPosition(new Vector3(position.x, 0, position.y));
+                }
+            }
+
+            void HandleGridSelected(Vector2Int position)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    completionSource.TrySetCanceled();
+                    return;
+                }
+                
+                GridNode selectedGridNode = gridManager.Grid.GridNodes[position.x, position.y];
+                if (selectedGridNode.GridElements.Any(x => x is WaterBlockPresenter) && EnsurePath(position))
+                {
+                    selectedGridNode.AddGirdElement(gridElement);
+                    completionSource.TrySetResult();
+                }
+            }
+
+            gridInteraction.OnGridCellSelected += HandleGridSelected;
+            gridInteraction.OnGridCellHovered += HandleGridHovered;
+            await completionSource.Task;
+            gridInteraction.OnGridCellSelected -= HandleGridSelected;
+            gridInteraction.OnGridCellHovered -= HandleGridHovered;
+        }
+
         private bool EnsurePath(Vector2Int position)
         {
-
             var convertedGrid = convertService.ConvertGridNodes(gridManager.Grid.GridNodes);
             convertedGrid[position.x, position.y].IsWalkable = false;
-            var path = pathFinding.GetPath(convertedGrid, enemyManager.StartPos, enemyManager.EndPos);
-            return path.Any();
+            return pathFinding.TryGetPath(out var path, convertedGrid, enemyManager.StartPos, enemyManager.EndPos);
         }
     }
 }

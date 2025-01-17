@@ -10,13 +10,13 @@ namespace Gameplay.Systems
     public class TowerBuildSystem
     {
         private readonly GridPlacementSystem gridPlacementSystem;
-        private readonly TowerBuilder towerBuilder;
+        private readonly PlaceablesBuilder placeablesBuilder;
         private readonly GridManager gridManager;
 
-        public TowerBuildSystem(GridPlacementSystem gridPlacementSystem, TowerBuilder towerBuilder, GridManager gridManager)
+        public TowerBuildSystem(GridPlacementSystem gridPlacementSystem, PlaceablesBuilder placeablesBuilder, GridManager gridManager)
         {
             this.gridPlacementSystem = gridPlacementSystem;
-            this.towerBuilder = towerBuilder;
+            this.placeablesBuilder = placeablesBuilder;
             this.gridManager = gridManager;
         }
         public async UniTask BuildTower(Towers towerType, CancellationToken cancellationToken)
@@ -25,13 +25,13 @@ namespace Gameplay.Systems
             switch (towerType)
             {
                 case Towers.TowerA:
-                    presenter = towerBuilder.CreateElectricTower();
+                    presenter = placeablesBuilder.CreateElectricTower();
                     break;
                 case Towers.TowerB:
-                    presenter = towerBuilder.CreateFireTower();
+                    presenter = placeablesBuilder.CreateFireTower();
                     break;
                 case Towers.TowerC:
-                    presenter = towerBuilder.CreateIceTower();
+                    presenter = placeablesBuilder.CreateIceTower();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -43,7 +43,17 @@ namespace Gameplay.Systems
             await registration.DisposeAsync();
         }
 
-        private void OnCancel(TowerPresenter presenter)
+        public async UniTask BuildBridge(CancellationToken cancellationToken)
+        {
+            var presenter = placeablesBuilder.CreateBridge();
+            var registration = cancellationToken.Register(() => OnCancel(presenter));
+            gridManager.ActivateBuildModeVisual();
+            await gridPlacementSystem.UserPlaceBridge(presenter, cancellationToken);
+            gridManager.DeactivateBuildModeVisual();
+            await registration.DisposeAsync();
+        }
+
+        private void OnCancel(IDisposable presenter)
         {
             presenter.Dispose();
         }

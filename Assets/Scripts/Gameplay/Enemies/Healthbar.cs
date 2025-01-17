@@ -24,7 +24,6 @@ namespace Gameplay.Enemies
 
         public void SetHealth(float percentage)
         {
-            Debug.Log(percentage);
             float fillAmount = (percentage - 0.5f) * rectTransform.rect.width;
             image.material.SetFloat(FillAmount, fillAmount);
         }

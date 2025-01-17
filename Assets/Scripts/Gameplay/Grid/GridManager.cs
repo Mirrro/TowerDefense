@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Blocks.Ground;
+using Gameplay.PathFinding;
 using UnityEngine;
 using Zenject;
 
@@ -21,7 +22,7 @@ namespace Gameplay.Grid
         public void Initialize()
         {
             grid = new Grid();
-            grid.Initialize(new Vector2Int(30,30));
+            grid.Initialize(new Vector2Int(10,10));
             grid.ElementAdded += HandleElementAdded;
             grid.ElementRemoved += HandleElementRemoved;
         }
@@ -64,14 +65,28 @@ namespace Gameplay.Grid
             }
         }
 
-        public List<Vector3> GetPath(Vector2Int start, Vector2Int end)
+        public Path GetPath(Vector2Int start, Vector2Int end)
         {
-            return pathFinding.GetPath(
-                    nodes: convertService.ConvertGridNodes(grid.GridNodes), 
-                    start: start, 
-                    end: end)
-                .Select(x => new Vector3(x.X, 0, x.Y))
-                .ToList();
+            bool isPathAvailable = pathFinding.TryGetPath(out var path,
+                nodes: convertService.ConvertGridNodes(grid.GridNodes),
+                start: start,
+                end: end);
+            return new Path(path.Select(x => new Vector3(x.X, 0, x.Y)).ToList(), isPathAvailable);
+        }
+        
+        public Path GetPathManipulated(Vector2Int start, Vector2Int end, Node[,] nodes)
+        {
+            bool isPathAvailable = pathFinding.TryGetPath(out var path,
+                nodes: nodes,
+                start: start,
+                end: end);
+            return new Path(path.Select(x => new Vector3(x.X, 0, x.Y)).ToList(), isPathAvailable);
+                
+        }
+
+        public Node[,] GetGridNodes()
+        {
+            return convertService.ConvertGridNodes(grid.GridNodes);
         }
 
         public Vector2Int WorldToGridPosition(Vector3 worldPosition)
@@ -83,6 +98,18 @@ namespace Gameplay.Grid
         {
             return gridPosition.x >= 0 && gridPosition.x < grid.Size.x &&
                    gridPosition.y >= 0 && gridPosition.y < grid.Size.y;
+        }
+    }
+    
+    public class Path
+    {
+        public List<Vector3> Steps;
+        public bool IsValid;
+        
+        public Path(List<Vector3> steps, bool isValid)
+        {
+            Steps = steps;
+            IsValid = isValid;
         }
     }
 }

@@ -88,6 +88,8 @@ namespace Gameplay.Enemies
                 renderer.material.SetFloat("_Dissolve", 0);
                 renderer.material.color = Color.white;
             }
+            
+            healthbar.SetHealth(1);
         }
 
         private void OnMouseDown()

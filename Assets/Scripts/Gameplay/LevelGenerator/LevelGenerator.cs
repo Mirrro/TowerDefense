@@ -26,16 +26,6 @@ namespace Gameplay.LevelGenerator
             {
                 for (int y = 0; y < grid.GridNodes.GetLength(1); y++)
                 {
-                    if (x > 20 && x < 30 && y > 20 && y < 30)
-                    {
-                        var model = new GroundBlockModel();
-                        model.Position = new Vector3(x, 0, y);
-                        var presenter = presenterFactory.CreateGroundBlockPresenter(model);
-                        presenter.Initialize();
-                        grid.GridNodes[x,y].AddGirdElement(presenter);
-                        continue;
-                    }
-                
                     float xCoord = seed + (float) x / grid.Size.x * 5f;
                     float yCoord = seed + (float) y / grid.Size.x * 5f;
                     float perlinNoise = Mathf.PerlinNoise(xCoord, yCoord);
@@ -72,8 +62,8 @@ namespace Gameplay.LevelGenerator
         {
             var convertedGrid = convertService.ConvertGridNodes(grid.GridNodes);
             convertedGrid[position.x, position.y].IsWalkable = false;
-            var path = pathFinding.GetPath(convertedGrid, enemyManager.StartPos, enemyManager.EndPos);
-            return path.Any();
+            var isValid = pathFinding.TryGetPath(out var path, convertedGrid, enemyManager.StartPos, enemyManager.EndPos);
+            return isValid;
         }
     }
 }

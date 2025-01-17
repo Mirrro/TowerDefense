@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Gameplay.PathFinding
 {
-    public class PathFinding
+    public class  PathFinding
     {
-        public List<Node> GetPath(Node[,] nodes, Vector2Int start, Vector2Int end)
+        public bool TryGetPath(out List<Node> path, Node[,] nodes, Vector2Int start, Vector2Int end)
         {
             if (nodes[start.x, start.y].IsWalkable)
             {
@@ -21,7 +21,8 @@ namespace Gameplay.PathFinding
 
                     if (currentNode.X == end.x && currentNode.Y == end.y)
                     {
-                        return ConstructPath(currentNode);
+                        path = ConstructPath(currentNode);
+                        return true;
                     }
             
                     openList.Remove(currentNode);
@@ -51,9 +52,9 @@ namespace Gameplay.PathFinding
                 }
             }
             
-        
             // No path found
-            return new List<Node>();
+            path = new List<Node>();
+            return false;
         }
     
         private Node GetLowestFCostNode(List<Node> nodes)

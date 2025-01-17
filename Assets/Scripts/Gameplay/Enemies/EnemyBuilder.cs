@@ -33,11 +33,16 @@ namespace Gameplay.Enemies
         {
             EnemyPresenter enemyPresenter = enemyFactory.Create(
                 enemyViewPool.MagePool.Get(),
-                new EnemyModel(50, 2),
-                new EnemyMovementStrategy(gridManager),
+                new EnemyModel(150, 2),
+                new MageMovementStrategy(gridManager),
                 new EnemyDamageStrategy());
             enemyPresenters.Add(enemyPresenter);
             return new EnemyPresenterBuild(enemyPresenter, enemyViewPool.MagePool);
+        }
+
+        public EnemyPresenterBuild CreateRogue()
+        {
+            return null;
         }
     }
 

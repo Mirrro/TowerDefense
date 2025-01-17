@@ -23,12 +23,16 @@ namespace Gameplay.Enemies
         private List<EnemyPresenterBuild> activeEnemies = new ();
 
         private Vector2Int startPos = new (0,0);
-        private Vector2Int endPos = new (15, 15);
+        private Vector2Int endPos = new (9, 5);
 
         private List<Wave> waves = new ()
         {
             new Wave(new List<EnemyTypes>()
             {
+                EnemyTypes.Warrior,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
+                EnemyTypes.Mage,
                 EnemyTypes.Mage,
             }),
             new Wave(new List<EnemyTypes>()
@@ -36,8 +40,6 @@ namespace Gameplay.Enemies
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Mage,
-                EnemyTypes.Mage,
-                EnemyTypes.Mage,
             }),
             new Wave(new List<EnemyTypes>()
             {
@@ -49,6 +51,7 @@ namespace Gameplay.Enemies
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
                 EnemyTypes.Warrior,
+                 
                 EnemyTypes.Warrior,
                 EnemyTypes.Mage,
                 EnemyTypes.Warrior,

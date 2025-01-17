@@ -13,10 +13,17 @@ namespace Gameplay.Util
         private const string path = "ViewContainer";
         private List<ITickable> tickables = new List<ITickable>();
 
+        private readonly WaterBlockPresenter.Factory waterBlockPresenterFactory;
+        
+        public PresenterFactory(WaterBlockPresenter.Factory waterBlockPresenterFactory)
+        {
+            this.waterBlockPresenterFactory = waterBlockPresenterFactory;
+        }
+
         public WaterBlockPresenter CreateWaterBlockPresenter(WaterBlockModel model)
         {
             var container = Resources.Load<ViewContainer>(path);
-            var presenter = new WaterBlockPresenter(Object.Instantiate(container.WaterBlockView, Vector3.zero, Quaternion.identity), model);
+            var presenter = waterBlockPresenterFactory.Create(Object.Instantiate(container.WaterBlockView, Vector3.zero, Quaternion.identity), model);
             tickables.Add(presenter);
             return presenter;
         }

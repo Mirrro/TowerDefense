@@ -29,7 +29,7 @@ namespace Gameplay.Systems.EnemyPathMVP
 
         private void UpdatePath()
         {
-            var path = gridManager.GetPath(enemyManager.StartPos, enemyManager.EndPos).Select(position => position + Vector3.up * .3f);
+            var path = gridManager.GetPath(enemyManager.StartPos, enemyManager.EndPos).Steps.Select(position => position + Vector3.up * .3f);
             view.DisplayPath(path.ToArray());
         }
 

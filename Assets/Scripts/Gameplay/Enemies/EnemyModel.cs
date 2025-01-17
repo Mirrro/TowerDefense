@@ -7,6 +7,7 @@ namespace Gameplay.Enemies
         public int MaxHealth;
         public int Health;
         public Vector3 Position;
+        public Quaternion Rotation;
         public Vector2Int GridTargetPosition;
         public float MovementSpeed;
         public int MovementPauseCounter;

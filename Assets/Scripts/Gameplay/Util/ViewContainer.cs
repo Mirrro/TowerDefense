@@ -31,6 +31,9 @@ namespace Gameplay.Util
         
         [SerializeField] private TowerView iceTowerView;
         public TowerView IceTowerView => iceTowerView;
-    
+
+        [SerializeField] private BridgeView bridgeView;
+        public BridgeView BridgeView => bridgeView;
+
     }
 }

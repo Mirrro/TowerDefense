@@ -1,3 +1,4 @@
+using Gameplay.Blocks.Water;
 using Gameplay.Enemies;
 using Gameplay.GameplayCards;
 using Gameplay.GameplayLoop;
@@ -16,7 +17,6 @@ using Gameplay.Towers.Strategies;
 using Gameplay.UserInterface;
 using Gameplay.Util;
 using UnityEngine;
-using UnityEngine.Pool;
 using Zenject;
 
 namespace Gameplay
@@ -50,6 +50,7 @@ namespace Gameplay
             // Mechanics
             Container.BindInterfacesAndSelfTo<EnemyDeathRewardSystem>().AsSingle();   
             Container.BindInterfacesAndSelfTo<EnemyReachGoalSystem>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BridgesMakeWaterWalkableSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<DefeatCondition>().AsSingle();
             Container.BindInterfacesAndSelfTo<VictoryCondition>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameplayCardExecutionSystem>().AsSingle();
@@ -59,10 +60,12 @@ namespace Gameplay
             Container.BindInterfacesAndSelfTo<GridPlacementSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<GridInteraction>().AsSingle();
             Container.BindInterfacesAndSelfTo<MouseRayCast>().AsSingle();
-            Container.BindInterfacesAndSelfTo<TowerBuilder>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PlaceablesBuilder>().AsSingle();
 
             // Factories
             Container.BindFactory<TowerStateMachine, TowerView, TowerModel, TowerPresenter, TowerPresenter.Factory>().AsSingle();
+            Container.BindFactory<BridgeView, BridgePresenter, BridgePresenter.Factory>().AsSingle();
+            Container.BindFactory<WaterBlockView, WaterBlockModel, WaterBlockPresenter, WaterBlockPresenter.Factory>().AsSingle();
             Container.BindFactory<IEnemyView, EnemyModel, IEnemyMoveStrategy, IEnemyDamageStrategy, EnemyPresenter, EnemyPresenter.Factory>().AsSingle();
                 // strategy Factories tower
             Container.BindFactory<SingleTargetAttackComponent, SingleTargetAttackComponent.Factory>().AsSingle();
@@ -75,6 +78,7 @@ namespace Gameplay
             Container.BindFactory<BuildTowerATask, BuildTowerATask.Factory>().AsSingle();
             Container.BindFactory<BuildTowerBTask, BuildTowerBTask.Factory>().AsSingle();
             Container.BindFactory<BuildTowerCTask, BuildTowerCTask.Factory>().AsSingle();
+            Container.BindFactory<BuildBridgeTask, BuildBridgeTask.Factory>().AsSingle();
             Container.BindFactory<HelloWorldGameplayTask, HelloWorldGameplayTask.Factory>().AsSingle();
             
             // Gameplay Loop
@@ -86,11 +90,5 @@ namespace Gameplay
             Container.Bind<VictoryState>().AsSingle();
             Container.Bind<InitializationState>().AsSingle();
         }
-    }
-    
-    public enum EnemyViewPoolIDs
-    {
-        Warrior = 0,
-        Mage = 1,
     }
 }

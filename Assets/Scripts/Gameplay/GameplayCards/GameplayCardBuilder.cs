@@ -9,6 +9,7 @@ namespace Gameplay.GameplayCards
         [Inject] private BuildTowerATask.Factory buildTowerATaskFactory;
         [Inject] private BuildTowerBTask.Factory buildTowerBTaskFactory;
         [Inject] private BuildTowerCTask.Factory buildTowerCTaskFactory;
+        [Inject] private BuildBridgeTask.Factory buildBridgeTaskFactory;
         [Inject] private HelloWorldGameplayTask.Factory hWFactory;
 
         public GameplayCard CreateShockclaw()
@@ -28,6 +29,16 @@ namespace Gameplay.GameplayCards
                 CardCost = 0,
                 CardName = "Vital Waters",
                 Description = "Gain one hit point. Aaand... It's for free!"
+            });
+        }
+
+        public GameplayCard CreateBridge()
+        {
+            return new GameplayCard(buildBridgeTaskFactory.Create(), new GameplayCardData()
+            {
+                CardCost = 100,
+                CardName = "Bridge",
+                Description = "Bridges can allow enemies to walk over water"
             });
         }
     

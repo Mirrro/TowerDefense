@@ -19,3 +19,4 @@ MonoBehaviour:
   electricTowerView: {fileID: 5838392094094051210, guid: 8bb593e58d392014a8c5f1bda5d7d124, type: 3}
   fireTowerView: {fileID: 6161550772142137137, guid: 615ee4505abf09c4abd7706fc2b62de0, type: 3}
   iceTowerView: {fileID: 5838392094094051210, guid: 230b8693fa5cf5a44b72327a46efcdaf, type: 3}
+  bridgeView: {fileID: 7044644200811984166, guid: 3cca1c7b559bdcb45937d0f23a87eb64, type: 3}

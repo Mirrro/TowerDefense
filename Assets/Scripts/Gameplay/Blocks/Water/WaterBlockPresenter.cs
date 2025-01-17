@@ -9,14 +9,21 @@ namespace Gameplay.Blocks.Water
     {
         private readonly WaterBlockView view;
         private readonly WaterBlockModel model;
-        public bool IsSolid => true;
+
+        public bool IsSolid => !isWalkable;
+        private bool isWalkable;
 
         public void OnGridPosition(Vector3 position)
         {
             model.Position = position;
             view.SetPosition(model.Position);
         }
-    
+
+        public void SetWalkable(bool walkable)
+        {
+            isWalkable = walkable;
+        }
+
         public WaterBlockPresenter(WaterBlockView view, WaterBlockModel model)
         {
             this.view = view;
@@ -46,6 +53,10 @@ namespace Gameplay.Blocks.Water
         public void ExitBuildMode(float duration)
         {
             view.ExitBuildMode(duration);
+        }
+
+        public class Factory : PlaceholderFactory<WaterBlockView, WaterBlockModel, WaterBlockPresenter>
+        {
         }
     }
 }

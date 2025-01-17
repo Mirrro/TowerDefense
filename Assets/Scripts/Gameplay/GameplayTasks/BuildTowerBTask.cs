@@ -18,4 +18,18 @@ namespace Gameplay.GameplayTasks
         {
         }
     }
+    
+    public class BuildBridgeTask : IGameplayTask
+    {
+        [Inject] private TowerBuildSystem towerBuildSystem;
+        
+        public async UniTask Execute(CancellationToken cancellationToken)
+        {
+            await towerBuildSystem.BuildBridge(cancellationToken);
+        }
+
+        public class Factory : PlaceholderFactory<BuildBridgeTask>
+        {
+        }
+    }
 }

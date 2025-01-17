@@ -34,7 +34,7 @@ namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
             {
                 gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateShockclaw());
             }
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 5; i++)
             {
                 gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateFrostbite());
             }
@@ -45,6 +45,10 @@ namespace Gameplay.GameplayLoop.GameplayStateMachine.GameplayStates
             for (int i = 0; i < 5; i++)
             {
                 gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateVitalWaters());
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                gameplayCardDeck.AddGameplayCard(gameplayCardBuilder.CreateBridge());   
             }
         }
 

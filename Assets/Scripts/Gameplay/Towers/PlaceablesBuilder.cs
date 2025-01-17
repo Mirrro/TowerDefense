@@ -8,7 +8,7 @@ using Zenject;
 
 namespace Gameplay.Towers
 {
-    public class TowerBuilder : ITickable
+    public class PlaceablesBuilder : ITickable
     {
         private const string path = "ViewContainer";
         private TowerPresenter.Factory towerFactory;
@@ -18,15 +18,17 @@ namespace Gameplay.Towers
         private readonly TowerDetectingStrategy.Factory towerDetectingStrategyFactory;
         private readonly SimpleSortingStrategy.Factory simpleSortingStrategyFactory;
         private readonly TowerCooldownStrategy.Factory cooldownStrategyFactory;
+        private readonly BridgePresenter.Factory bridgePresenterFactory;
         private List<TowerPresenter> towerPresenters = new();
 
-        public TowerBuilder(TowerPresenter.Factory towerFactory, 
+        public PlaceablesBuilder(TowerPresenter.Factory towerFactory, 
             SingleTargetAttackComponent.Factory singleTargetAttackStrategyFactory,
             MultipleTargetAttackComponent.Factory multipleTargetAttackStrategyFactory,
             FreezeMultipleTargetAttackComponent.Factory freezeMultipleTargetAttackingStrategy,
             TowerDetectingStrategy.Factory towerDetectingStrategyFactory,
             SimpleSortingStrategy.Factory simpleSortingStrategyFactory,
-            TowerCooldownStrategy.Factory cooldownStrategyFactory)
+            TowerCooldownStrategy.Factory cooldownStrategyFactory, 
+            BridgePresenter.Factory bridgePresenterFactory)
         {
             this.towerFactory = towerFactory;
             this.singleTargetAttackStrategyFactory = singleTargetAttackStrategyFactory;
@@ -35,6 +37,7 @@ namespace Gameplay.Towers
             this.towerDetectingStrategyFactory = towerDetectingStrategyFactory;
             this.simpleSortingStrategyFactory = simpleSortingStrategyFactory;
             this.cooldownStrategyFactory = cooldownStrategyFactory;
+            this.bridgePresenterFactory = bridgePresenterFactory;
         }
     
         public TowerPresenter CreateElectricTower()
@@ -98,6 +101,12 @@ namespace Gameplay.Towers
             towerPresenter.Initialize();
             towerPresenters.Add(towerPresenter);
             return towerPresenter;
+        }
+
+        public BridgePresenter CreateBridge()
+        {
+            var container = Resources.Load<ViewContainer>(path);
+            return bridgePresenterFactory.Create(Object.Instantiate(container.BridgeView, Vector3.zero, Quaternion.identity));
         }
 
         private TowerStateMachine CreateIceTowerStateMachine()
